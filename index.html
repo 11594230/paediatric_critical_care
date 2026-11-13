@@ -336,13 +336,13 @@ const CASES = [
         tier: "Identify",
         question: "What is your priority as you take over?",
         options: [
-          { text: "Take over 15:2 CPR with BVM and 15 L oxygen, and get paediatric pads on and the rhythm analysed as fast as possible. Sudden collapse on exertion with a cardiac history points to a primary cardiac cause and a likely shockable rhythm.", tier: "correct",
+          { text: "Have your colleague take over 15:2 with the BVM while you get paediatric pads on and analyse the rhythm as quickly as possible.", tier: "correct",
             feedback: "Correct. Most paediatric arrests are hypoxic, but this one isn't. Sudden collapse during exertion in a child with a cardiac history often presents in VF or pulseless VT, and survival depends on rapid defibrillation." },
-          { text: "Give 5 rescue breaths and a full minute of CPR before attaching pads, as hypoxia is the commonest cause of paediatric arrest.", tier: "caution",
+          { text: "Give 5 rescue breaths and a full minute of 15:2 CPR before attaching pads, as hypoxia is the most common cause of arrest in children.", tier: "caution",
             feedback: "Not quite. That's the right default for a hypoxic arrest, but this history points to a cardiac cause. Ventilation still matters, but delaying rhythm analysis here delays the shock most likely to work." },
-          { text: "Use adult pads because she is tall for her age and will need higher energies.", tier: "caution",
+          { text: "Take over 15:2 CPR and apply adult pads, as she is tall for her age and will need higher energies than paediatric pads allow.", tier: "caution",
             feedback: "Not quite. Paediatric pads are used from 1 to 8 years. Adult pads are reserved for over-8s, or used only when paediatric pads aren't available. Energy is set on the monitor by weight, not by pad choice." },
-          { text: "Ask the teacher to stop CPR so you can check for signs of life and a carotid pulse for 30 seconds before deciding what to do.", tier: "unsafe",
+          { text: "Ask the teacher to pause CPR so you can check for signs of life and a carotid pulse for 30 seconds before choosing your next step.", tier: "unsafe",
             feedback: "Unsafe. Pulse and breathing checks take up to 10 seconds. A 30-second pause in an ongoing arrest drops coronary perfusion to nothing and delays defibrillation." }
         ],
         eyebrow: "Case 1 · First Contact"
@@ -356,13 +356,13 @@ const CASES = [
         tier: "Prioritise",
         question: "What energy do you select for the first shock?",
         options: [
-          { text: "4 J/kg × 21 kg = 84 J. The Zoll can't deliver 84 J, so round up to 85 J. Shock, then resume 15:2 CPR immediately without a pulse check.", tier: "correct",
+          { text: "4 J/kg gives 84 J, so select 85 J. Shock once, then resume 15:2 CPR immediately.", tier: "correct",
             feedback: "Correct. Calculate at 4 J/kg and round up to the next setting the defibrillator can deliver. She wasn't monitored by the crew at the point of collapse, so this is a single shock followed straight away by 2 minutes of CPR." },
-          { text: "4 J/kg × 21 kg = 84 J. Round down to 70 J to avoid over-shocking a small child.", tier: "caution",
+          { text: "4 J/kg gives 84 J. Round down to 70 J so you don't over-shock a small child, then resume 15:2 CPR straight away.", tier: "caution",
             feedback: "Not quite. Guidance is to round up to the next available energy. 70 J is well under 4 J/kg and reduces the chance of successful defibrillation." },
-          { text: "Start at 85 J and escalate with each shock (85 J, 100 J, 120 J) in the same way as the adult sequence.", tier: "caution",
+          { text: "Start at 85 J and escalate with each shock (85 J, 100 J, 120 J), mirroring the adult sequence, resuming CPR after each one.", tier: "caution",
             feedback: "Not quite. Paediatric energy doesn't climb shock by shock. It stays at 4 J/kg for the first five shocks and increases to 8 J/kg only after the fifth." },
-          { text: "Select 200 J. She's in VF and the highest energy gives the best chance of conversion.", tier: "unsafe",
+          { text: "Select 200 J, as she's in VF and the highest available energy gives the best chance of converting the rhythm first time.", tier: "unsafe",
             feedback: "Unsafe. 200 J is nearly 10 J/kg for a 21 kg child, more than double the recommended dose. Paediatric energy is always weight based." }
         ],
         eyebrow: "Case 1 · Full Picture"
@@ -377,13 +377,13 @@ const CASES = [
         tier: "Anticipate",
         question: "What changes after the fifth shock?",
         options: [
-          { text: "Increase energy to 8 J/kg (168 J, rounded up to 200 J on the Zoll). Give a second amiodarone dose at the same 100 mg (3.3 ml), flushed with 20 ml, and adrenaline 210 micrograms (2.1 ml) as it's due. Request enhanced care and plan conveyance with ongoing resuscitation.", tier: "correct",
-            feedback: "Correct. Current guidance escalates to 8 J/kg after the fifth shock, rounded up to the next available setting. In children under 10 the second amiodarone dose is the same as the first, not half. Adrenaline continues every 3 to 5 minutes." },
-          { text: "Keep shocking at 85 J. Paediatric energy is never escalated.", tier: "caution",
+          { text: "Increase to 8 J/kg (200 J on the Zoll), give a second full dose of amiodarone (100 mg), and continue adrenaline as it falls due.", tier: "correct",
+            feedback: "Correct. Energy rises to 8 J/kg after the fifth shock: 168 J, rounded up to 200 J on the Zoll. In children under 10 the second amiodarone is the same 100 mg (3.3 ml), flushed with 20 ml, not half. Adrenaline 210 micrograms (2.1 ml) continues every 3 to 5 minutes. Request enhanced care and plan conveyance with ongoing resuscitation." },
+          { text: "Keep shocking at 85 J, as paediatric energy is never escalated, and give a second dose of amiodarone (100 mg) with adrenaline as it falls due.", tier: "caution",
             feedback: "Not quite. That was older teaching. Energy now increases to 8 J/kg after the fifth shock if VF or pVT persists." },
-          { text: "Escalate to 200 J, and give a second amiodarone dose of 50 mg, half of the first, in line with the adult sequence.", tier: "caution",
+          { text: "Increase to 200 J and give a second amiodarone dose of 50 mg, half the first, following the adult sequence, with adrenaline as it falls due.", tier: "caution",
             feedback: "Not quite on the drug. The energy is right, but in children under 10 the fifth-shock amiodarone dose is the same as the third-shock dose: 5 mg/kg, which is 100 mg here." },
-          { text: "Stop drugs and shocks, as refractory VF in a child with structural heart disease is unlikely to respond. Start talking to staff about stopping.", tier: "unsafe",
+          { text: "Stop drugs and shocks, as refractory VF in a child with structural heart disease rarely responds, and start discussing stopping with staff.", tier: "unsafe",
             feedback: "Unsafe. Children are almost always resuscitated and conveyed with ongoing CPR. Good EtCO₂ and persistent VF are reasons to keep going, not to stop." }
         ],
         eyebrow: "Case 1 · Twist"
@@ -416,13 +416,13 @@ const CASES = [
         tier: "Identify",
         question: "What is your impression and immediate plan?",
         options: [
-          { text: "Suspected meningococcal sepsis. This is time critical: high-flow oxygen, rapid ABCDE, early vascular access, benzylpenicillin and fluids without delay, an early pre-alert and minimal time on scene.", tier: "correct",
+          { text: "Suspected meningococcal sepsis. Oxygen, vascular access, antibiotics and fluids now, with an early pre-alert and minimal scene time.", tier: "correct",
             feedback: "Correct. Fever with a non-blanching rash, altered responsiveness and poor peripheral perfusion is meningococcal disease until proven otherwise. Treatment and conveyance must not wait for a full work-up on scene." },
-          { text: "Probable sepsis. Complete a full history and head-to-toe survey on scene first so your handover is complete, then decide on treatment.", tier: "caution",
+          { text: "Probable sepsis. Complete a full history and head-to-toe survey on scene first so your handover is thorough, then decide on treatment.", tier: "caution",
             feedback: "Not quite. Your instinct is right, but the sequence is wrong. This child is deteriorating, so treatment and conveyance run in parallel with your assessment, not after it." },
-          { text: "Likely viral illness. Some of the spots look like bruises, so check the rest with a glass before deciding.", tier: "caution",
+          { text: "Possible viral illness. Some spots look like bruises, so glass-test every lesion and recheck his temperature before deciding how unwell he is.", tier: "caution",
             feedback: "Not quite. Even one non-blanching spot in a febrile, drowsy, poorly perfused child is enough. Don't let the other features be explained away." },
-          { text: "Give paracetamol and reassess in 30 minutes. If his temperature comes down and he perks up, safety-net and leave him at home.", tier: "unsafe",
+          { text: "Give paracetamol and reassess in 30 minutes. If his temperature settles and he perks up, safety-net with dad and leave him at home.", tier: "unsafe",
             feedback: "Unsafe. A response to antipyretics doesn't rule out serious bacterial illness. This child needs antibiotics and hospital now." }
         ],
         eyebrow: "Case 2 · First Contact"
@@ -437,13 +437,13 @@ const CASES = [
         tier: "Prioritise",
         question: "What drugs and fluids do you give?",
         options: [
-          { text: "Benzylpenicillin 600 mg IO (1 to 9 years) and a sodium chloride 0.9% bolus of 10 ml/kg (120 ml). Reassess after the bolus. A rash with amoxicillin isn't a contraindication.", tier: "correct",
+          { text: "Benzylpenicillin 600 mg IO and a 120 ml sodium chloride 0.9% bolus, then reassess. The amoxicillin rash doesn't change your plan.", tier: "correct",
             feedback: "Correct. Only a history of anaphylaxis to penicillin contraindicates benzylpenicillin. The fluid bolus for a medical emergency is 10 ml/kg, repeated once if needed, with a maximum of 240 ml including flushes for this age." },
-          { text: "Benzylpenicillin 300 mg IO and a 120 ml sodium chloride 0.9% bolus.", tier: "caution",
+          { text: "Benzylpenicillin 300 mg IO and a 120 ml sodium chloride 0.9% bolus, then reassess. The amoxicillin rash doesn't change your plan.", tier: "caution",
             feedback: "Not quite on the antibiotic. 300 mg is the under-1 dose. At 2 years old he needs 600 mg." },
-          { text: "Benzylpenicillin 600 mg IO and a single 20 ml/kg (240 ml) bolus to correct his shock faster.", tier: "caution",
+          { text: "Benzylpenicillin 600 mg IO and a single 240 ml bolus (20 ml/kg) to correct his shock faster, then reassess on the way in.", tier: "caution",
             feedback: "Not quite on the fluid. JRCALC gives 10 ml/kg aliquots with reassessment in between. Giving the full maximum in one go removes your chance to spot fluid overload and leaves nothing for flushes." },
-          { text: "Withhold benzylpenicillin because of the previous amoxicillin rash, give fluids, and let hospital decide on antibiotics.", tier: "unsafe",
+          { text: "Withhold benzylpenicillin because of the amoxicillin rash, give a 120 ml bolus, and let the hospital decide on antibiotics.", tier: "unsafe",
             feedback: "Unsafe. A non-specific rash isn't anaphylaxis. Delaying antibiotics in meningococcal sepsis significantly increases the risk of death and disability." }
         ],
         eyebrow: "Case 2 · Full Picture"
@@ -458,13 +458,13 @@ const CASES = [
         tier: "Anticipate",
         question: "What do you do now?",
         options: [
-          { text: "Treat the hypoglycaemia with glucose 10% 2 ml/kg (24 ml) IO, flushed with 10 ml. Then give a second bolus capped at 90 ml, because 240 ml minus the 150 ml already given leaves 90 ml. Recheck BM and update the pre-alert.", tier: "correct",
-            feedback: "Correct. A BM under 3.0 in a non-diabetic child is hypoglycaemia, and septic children burn through glucose. Every sodium chloride flush counts towards the 240 ml maximum, so the second bolus is trimmed to fit." },
-          { text: "Give glucose 10% 24 ml, then the full second bolus of 120 ml.", tier: "caution",
+          { text: "Glucose 10% 24 ml IO with a 10 ml flush, then a second sodium chloride bolus of 90 ml. Recheck his BM.", tier: "correct",
+            feedback: "Correct. A BM under 3.0 in a non-diabetic child is hypoglycaemia, and glucose 10% at 2 ml/kg is 24 ml. Every sodium chloride flush counts towards the 240 ml maximum: 120 ml bolus, 20 ml of earlier flushes and the 10 ml glucose flush make 150 ml, leaving 90 ml. Update your pre-alert." },
+          { text: "Glucose 10% 24 ml IO with a 10 ml flush, then a second sodium chloride bolus of 120 ml. Recheck his BM.", tier: "caution",
             feedback: "Not quite on the fluid. With the earlier flushes and the glucose flush, a full 120 ml takes him to 270 ml, which is over the 240 ml maximum." },
-          { text: "Give glucagon IM, as it avoids using up your IO line.", tier: "caution",
+          { text: "Glucagon IM to save your IO line for fluids, then a second sodium chloride bolus of 90 ml. Recheck his BM in 10 minutes.", tier: "caution",
             feedback: "Not quite. Glucagon relies on liver glycogen, which a septic child may have used up. With working IO access, glucose 10% is faster and more reliable." },
-          { text: "Rub glucose gel into his gums and recheck his BM in 10 minutes.", tier: "unsafe",
+          { text: "Glucose gel rubbed into his gums, then a second sodium chloride bolus of 90 ml. Recheck his BM in 10 minutes.", tier: "unsafe",
             feedback: "Unsafe. He only responds to pain and can't protect his airway. Oral glucose risks aspiration and is unlikely to be absorbed quickly enough." }
         ],
         eyebrow: "Case 2 · Twist"
@@ -498,13 +498,13 @@ const CASES = [
         tier: "Identify",
         question: "What are your first actions?",
         options: [
-          { text: "On a firm surface, hold the head in neutral alignment with padding under the shoulders, suction the secretions, then give 5 rescue breaths with a paediatric BVM on 15 L oxygen, each over 1 second, watching for chest rise. Then check the brachial pulse for up to 10 seconds.", tier: "correct",
-            feedback: "Correct. This is almost certainly a hypoxic event from bronchiolitis. Airway and ventilation come first. Infants need neutral alignment, and the shoulder padding offsets their large occiput." },
-          { text: "Open the airway with head tilt and chin lift, extending the neck well to straighten the airway, then give 5 rescue breaths.", tier: "caution",
+          { text: "Neutral head position with a shoulder roll, suction, then 5 gentle rescue breaths with BVM and oxygen before checking the brachial pulse.", tier: "correct",
+            feedback: "Correct. This is almost certainly a hypoxic event from bronchiolitis, so airway and ventilation come first. Infants need neutral alignment, and a shoulder roll offsets their large occiput. Give each breath over 1 second on 15 L oxygen, watch for chest rise, then check the brachial pulse for up to 10 seconds." },
+          { text: "Head tilt and chin lift with the neck well extended to open the airway, then 5 rescue breaths with BVM and oxygen before a pulse check.", tier: "caution",
             feedback: "Not quite. Head tilt and chin lift isn't used under 12 months, and overextension kinks an infant's soft airway. Neutral alignment is the target." },
-          { text: "Start chest compressions immediately at 30:2 while your colleague prepares the BVM.", tier: "caution",
+          { text: "Start chest compressions at 30:2 straight away while your colleague prepares the BVM, suction and oxygen for the first breaths.", tier: "caution",
             feedback: "Not quite. The ratio for healthcare providers is 15:2, and in a hypoxic infant the 5 rescue breaths come before compressions." },
-          { text: "Do a finger sweep of the mouth to clear the secretions before ventilating.", tier: "unsafe",
+          { text: "Sweep the mouth with a finger to clear the thick secretions, then give 5 rescue breaths with BVM and oxygen before a pulse check.", tier: "unsafe",
             feedback: "Unsafe. Blind finger sweeps can push material further down and damage the soft palate. Use suction, or a laryngoscope with Magill's forceps for a visible foreign body." }
         ],
         eyebrow: "Case 3 · First Contact"
@@ -519,13 +519,13 @@ const CASES = [
         tier: "Prioritise",
         question: "What is your management now?",
         options: [
-          { text: "HR under 60 with no signs of life despite good ventilation means starting 15:2 compressions at 4 cm depth. Attach paediatric pads, site an IO 1 cm medial and 1 cm distal to the tibial tuberosity, and give adrenaline 10 micrograms/kg: 60 micrograms (0.6 ml of 1 in 10,000), flushed with 20 ml of sodium chloride 0.9%.", tier: "correct",
-            feedback: "Correct. A slow heart rate with poor perfusion in an infant is treated as cardiac arrest. It follows the non-shockable pathway, so adrenaline goes in as soon as you have access." },
-          { text: "There's a pulse, so keep ventilating only and reassess every 2 minutes.", tier: "caution",
+          { text: "Start 15:2 CPR, site a tibial IO and give adrenaline 60 micrograms (0.6 ml of 1 in 10,000).", tier: "correct",
+            feedback: "Correct. A pulse under 60 with no signs of life despite good ventilation is managed as cardiac arrest: 15:2 at 4 cm depth with paediatric pads attached. Site the IO 1 cm medial and 1 cm distal to the tibial tuberosity. Adrenaline at 10 micrograms/kg is 60 micrograms (0.6 ml), flushed with 20 ml of sodium chloride 0.9%." },
+          { text: "There's a pulse, so continue ventilation alone at the infant rate, attach paediatric pads and reassess the pulse every 2 minutes.", tier: "caution",
             feedback: "Not quite. If the pulse is under 60/min and isn't improving with good ventilation, start compressions. A palpable but slow pulse doesn't perfuse an infant's brain or heart." },
-          { text: "Give atropine to treat the bradycardia before starting compressions.", tier: "caution",
+          { text: "Give atropine through a tibial IO to treat the bradycardia, continue ventilating, and start compressions only if the rate falls further.", tier: "caution",
             feedback: "Not quite. Hypoxia is the most common cause of bradycardia in children, so oxygenation, ventilation and CPR come first. Atropine has no place in this arrest." },
-          { text: "Start 15:2 CPR and give adrenaline 600 micrograms (6 ml of 1 in 10,000) IO.", tier: "unsafe",
+          { text: "Start 15:2 CPR, site a tibial IO and give adrenaline 600 micrograms (6 ml of 1 in 10,000).", tier: "unsafe",
             feedback: "Unsafe. That's a tenfold error. 10 micrograms × 6 kg = 60 micrograms, which is 0.6 ml. Decimal errors are among the most common paediatric drug errors, so check the volume aloud with your colleague." }
         ],
         eyebrow: "Case 3 · Full Picture"
@@ -540,13 +540,13 @@ const CASES = [
         tier: "Anticipate",
         question: "What are your post-ROSC priorities?",
         options: [
-          { text: "Keep assisting ventilation at 25 breaths/min (one every 2.4 seconds) with just enough volume for chest rise, then titrate oxygen to SpO₂ 94 to 98% once the reading is reliable. Recheck BM, keep him warm, leave the pads on, pre-alert the nearest paediatric ED, and bring mum with you.", tier: "correct",
-            feedback: "Correct. Ten shallow breaths a minute is inadequate for an infant, so keep ventilating at the infant rate. A paediatric BVM can deliver far more than his tidal volume, so squeeze only to chest rise." },
-          { text: "Assist ventilation at 12 breaths/min, one every 5 seconds.", tier: "caution",
+          { text: "Keep ventilating at 25 breaths/min with just enough volume for chest rise, then titrate oxygen to 94 to 98% once SpO₂ is reliable.", tier: "correct",
+            feedback: "Correct. Ten shallow breaths a minute is inadequate for an infant, so keep ventilating at one breath every 2.4 seconds. A paediatric BVM can deliver far more than his tidal volume, so squeeze only to chest rise. Recheck his BM, keep him warm, leave the pads on, pre-alert the paediatric ED and bring mum with you." },
+          { text: "Keep ventilating at 12 breaths/min, one every 5 seconds, with just enough volume for chest rise, then titrate oxygen to 94 to 98%.", tier: "caution",
             feedback: "Not quite. That's an adult rate. Infants under 1 year need 25 breaths/min." },
-          { text: "He's breathing on his own now, so switch to a non-rebreathe mask at 15 L and monitor.", tier: "caution",
+          { text: "He's breathing for himself now, so swap to a non-rebreathe mask at 15 L, keep the pads on and reassess his breathing en route.", tier: "caution",
             feedback: "Not quite. Spontaneous breathing isn't the same as adequate breathing. At 10 shallow breaths a minute, with a high EtCO₂ and SpO₂ of 88%, he still needs assisted ventilation." },
-          { text: "Squeeze the bag firmly and fast to bring his SpO₂ up as quickly as possible.", tier: "unsafe",
+          { text: "Squeeze the bag firmly and fast to bring his SpO₂ up as quickly as possible, then ease off once it reaches 94 to 98%.", tier: "unsafe",
             feedback: "Unsafe. Vigorous bagging in a small infant risks barotrauma and pneumothorax, and can cause gastric inflation. Ventilate only until the chest rises." }
         ],
         eyebrow: "Case 3 · Twist"
@@ -581,13 +581,13 @@ const CASES = [
         tier: "Identify",
         question: "How severe is this, and what is your treatment?",
         options: [
-          { text: "Life-threatening asthma (SpO₂ under 92%, poor air entry, agitation). Give oxygen-driven salbutamol 2.5 mg nebulised, followed by ipratropium 250 micrograms in a separate nebuliser, and hydrocortisone per JRCALC Page for Age. Keep her upright, pre-alert and convey without delay.", tier: "correct",
-            feedback: "Correct. A quiet chest in a child who can't speak is a danger sign, not reassurance. Salbutamol 2.5 mg is the under-5 dose. Ipratropium goes in its own nebuliser locally." },
-          { text: "Life-threatening asthma. Give salbutamol 2.5 mg and ipratropium 250 micrograms together in the same nebuliser to save time.", tier: "caution",
+          { text: "Life-threatening asthma. Salbutamol 2.5 mg nebulised, then ipratropium 250 micrograms in a separate nebuliser, with hydrocortisone.", tier: "correct",
+            feedback: "Correct. A quiet chest in a child who can't speak is a danger sign, not reassurance. Salbutamol 2.5 mg is the under-5 dose, and ipratropium goes in its own nebuliser locally. Give hydrocortisone per JRCALC Page for Age, keep her upright, pre-alert and convey without delay." },
+          { text: "Life-threatening asthma. Salbutamol 2.5 mg and ipratropium 250 micrograms together in one nebuliser to save time, with hydrocortisone.", tier: "caution",
             feedback: "Not quite. The drugs and doses are right, but locally they are never mixed in the same nebuliser. Give them one after the other." },
-          { text: "Severe asthma, as she still has some wheeze. Give 10 puffs of salbutamol via spacer and reassess on scene in 15 minutes.", tier: "caution",
+          { text: "Severe asthma, as there's still some wheeze. Ten puffs of salbutamol via her spacer, then reassess on scene in 15 minutes.", tier: "caution",
             feedback: "Not quite. SpO₂ under 92%, being unable to talk and a quiet chest make this life-threatening. Spacer treatment on scene has already failed." },
-          { text: "Lie her flat on the stretcher to calm her down, give 15 L via non-rebreathe, and save the nebulisers for hospital.", tier: "unsafe",
+          { text: "Lie her flat on the stretcher to help her settle, give 15 L via a non-rebreathe mask, and save the nebulisers for hospital.", tier: "unsafe",
             feedback: "Unsafe. Lying her flat makes breathing harder, and withholding bronchodilators in life-threatening asthma risks a hypoxic arrest." }
         ],
         eyebrow: "Case 4 · First Contact"
@@ -602,13 +602,13 @@ const CASES = [
         tier: "Prioritise",
         question: "What does this picture mean, and what do you do?",
         options: [
-          { text: "This is exhaustion and impending arrest, not improvement. Assist her ventilation with a BVM on 15 L oxygen, at a slow rate with gentle breaths and a long gap for exhalation. Request enhanced care and move now.", tier: "correct",
+          { text: "She's exhausted, not improving. Assist ventilation with a BVM at a slow rate with gentle breaths, request enhanced care and move now.", tier: "correct",
             feedback: "Correct. A falling respiratory and heart rate, rising drowsiness and a silent chest are pre-terminal signs. Slow, gentle ventilation reduces air trapping in already hyperinflated lungs." },
-          { text: "Assist ventilation at a fast rate to correct her hypoxia as quickly as possible.", tier: "caution",
+          { text: "She's exhausted. Assist ventilation with a BVM at a fast rate to correct her hypoxia quickly, request enhanced care and move now.", tier: "caution",
             feedback: "Not quite. She does need ventilating, but fast breaths don't give the lungs time to empty. Trapped air builds up, raising chest pressure and cutting venous return." },
-          { text: "Insert an NPA to support her airway while you continue nebulisers.", tier: "caution",
+          { text: "She's tiring. Insert an NPA to support her airway, continue oxygen-driven nebulisers, request enhanced care and move now.", tier: "caution",
             feedback: "Not quite. NPAs are contraindicated under 12 years. More importantly, her problem is ventilation, not airway patency." },
-          { text: "Her heart and breathing rates are settling, which shows the salbutamol is working. Continue nebulisers and monitor.", tier: "unsafe",
+          { text: "Her heart and breathing rates are settling, so the salbutamol is working. Continue nebulisers and monitor her closely.", tier: "unsafe",
             feedback: "Unsafe. Falling rates alongside falling SpO₂ and conscious level mean she is tiring. Read the whole picture, not single numbers." }
         ],
         eyebrow: "Case 4 · Full Picture"
@@ -623,13 +623,13 @@ const CASES = [
         tier: "Anticipate",
         question: "What is your arrest management?",
         options: [
-          { text: "Start 15:2 CPR and give adrenaline 160 micrograms (1.6 ml) IO as soon as you have access. Ventilate gently with long exhalation times, and treat the unequal chest rise and stiff bagging as a possible tension pneumothorax, decompressing per JRCALC.", tier: "correct",
-            feedback: "Correct. This is a non-shockable, hypoxic arrest, so adrenaline goes in as soon as you have access. In asthma, air trapping and tension pneumothorax are the reversible causes to hunt for." },
-          { text: "Start CPR and give adrenaline 160 micrograms, plus amiodarone 80 mg because the complexes are broad.", tier: "caution",
+          { text: "15:2 CPR, adrenaline 160 micrograms IO, slow gentle ventilation, and decompress the chest if this is a tension pneumothorax.", tier: "correct",
+            feedback: "Correct. This is a non-shockable, hypoxic arrest, so adrenaline (1.6 ml) goes in as soon as you have access. Ventilate gently with long exhalation times to limit air trapping. Unequal chest rise and stiff bagging suggest a tension pneumothorax, so decompress per JRCALC." },
+          { text: "15:2 CPR, adrenaline 160 micrograms IO, plus amiodarone 80 mg because the complexes are broad, with slow gentle ventilation.", tier: "caution",
             feedback: "Not quite. Amiodarone is only for shockable rhythms. PEA is non-shockable, whatever the QRS width." },
-          { text: "Start CPR, but hold adrenaline until after the third rhythm check.", tier: "caution",
+          { text: "15:2 CPR with slow gentle ventilation and long exhalation, holding adrenaline until after the third rhythm check as per the algorithm.", tier: "caution",
             feedback: "Not quite. That timing belongs to the shockable pathway. In PEA and asystole, adrenaline goes in as soon as you have IV or IO access." },
-          { text: "Bag hard and fast to force oxygen past the bronchospasm.", tier: "unsafe",
+          { text: "15:2 CPR with firm, fast ventilations to force oxygen past the bronchospasm, and adrenaline 160 micrograms IO on access.", tier: "unsafe",
             feedback: "Unsafe. That worsens air trapping and makes a pneumothorax more likely. A paediatric BVM can deliver around 500 ml, far more than her tidal volume." }
         ],
         eyebrow: "Case 4 · Twist"
@@ -662,13 +662,13 @@ const CASES = [
         tier: "Identify",
         question: "What is your immediate management?",
         options: [
-          { text: "Anaphylaxis with airway, breathing and circulation features. Keep him from standing. Give IM adrenaline 300 micrograms (0.3 ml of 1 in 1,000) into the anterolateral thigh now, as more than 5 minutes have passed, and start high-flow oxygen.", tier: "correct",
+          { text: "Stop him standing, give IM adrenaline 300 micrograms (0.3 ml of 1 in 1,000) into his thigh now, and start high-flow oxygen.", tier: "correct",
             feedback: "Correct. Adrenaline can be repeated after 5 minutes if there's no improvement, and 300 micrograms is the 6 to 11 year dose. Standing a shocked child up can trigger sudden collapse." },
-          { text: "Wait until 10 minutes after the auto-injector before repeating IM adrenaline, so the first dose has time to work.", tier: "caution",
+          { text: "Stop him standing and start high-flow oxygen, but wait until 10 minutes after the auto-injector before giving more IM adrenaline.", tier: "caution",
             feedback: "Not quite. The repeat interval is 5 minutes. He's still getting worse, so the second dose is due now." },
-          { text: "Give chlorphenamine and hydrocortisone first, then consider more adrenaline if he doesn't improve.", tier: "caution",
+          { text: "Stop him standing, start high-flow oxygen, and give chlorphenamine and hydrocortisone before considering further adrenaline.", tier: "caution",
             feedback: "Not quite. Adrenaline is the only first-line drug in anaphylaxis. Antihistamines and steroids don't treat airway swelling or shock and must never delay adrenaline." },
-          { text: "Give adrenaline 1 in 1,000 IV slowly, since IV acts faster than IM.", tier: "unsafe",
+          { text: "Stop him standing, start high-flow oxygen, and give adrenaline 1 in 1,000 slowly IV, as it acts faster than the IM route.", tier: "unsafe",
             feedback: "Unsafe. IV adrenaline in a patient with a pulse can cause dangerous arrhythmias and is for specialists only. IM is the paramedic route." }
         ],
         eyebrow: "Case 5 · First Contact"
@@ -683,13 +683,13 @@ const CASES = [
         tier: "Prioritise",
         question: "What is your next step?",
         options: [
-          { text: "Give a sodium chloride 0.9% bolus of 10 ml/kg (250 ml) and reassess. Keep giving IM adrenaline every 5 minutes while he remains compromised, and add salbutamol for the wheeze. After two doses with ongoing shock this is refractory anaphylaxis, so request enhanced care and convey.", tier: "correct",
-            feedback: "Correct. Anaphylaxis causes significant fluid shift, so fluids support the adrenaline. Ongoing shock after two IM doses needs an adrenaline infusion, which is a specialist intervention." },
-          { text: "Give a 5 ml/kg bolus (125 ml) to avoid fluid overload.", tier: "caution",
+          { text: "A 250 ml sodium chloride bolus, IM adrenaline every 5 minutes while he's compromised, and request enhanced care.", tier: "correct",
+            feedback: "Correct. Anaphylaxis causes a large fluid shift, and 10 ml/kg is 250 ml. Keep giving IM adrenaline every 5 minutes and add salbutamol for the wheeze. Ongoing shock after two IM doses is refractory anaphylaxis and needs an adrenaline infusion, which is a specialist intervention." },
+          { text: "A 125 ml sodium chloride bolus to avoid fluid overload, IM adrenaline every 5 minutes while compromised, and request enhanced care.", tier: "caution",
             feedback: "Not quite. 5 ml/kg is for trauma and heart or renal failure. A medical emergency like anaphylaxis takes 10 ml/kg." },
-          { text: "Give a 20 ml/kg bolus (500 ml) straight away, as he's profoundly hypotensive.", tier: "caution",
+          { text: "A 500 ml sodium chloride bolus as he's profoundly hypotensive, IM adrenaline every 5 minutes, and request enhanced care.", tier: "caution",
             feedback: "Not quite. Give 10 ml/kg and reassess. Large single boluses remove your chance to check the response." },
-          { text: "Give hydrocortisone and wait 10 minutes for it to work before any further adrenaline.", tier: "unsafe",
+          { text: "IV hydrocortisone, then wait 10 minutes for it to take effect before deciding on further adrenaline or fluids.", tier: "unsafe",
             feedback: "Unsafe. Steroids act over hours, not minutes. Holding adrenaline in ongoing shock risks cardiac arrest." }
         ],
         eyebrow: "Case 5 · Full Picture"
@@ -704,13 +704,13 @@ const CASES = [
         tier: "Anticipate",
         question: "How do you move and manage him from here?",
         options: [
-          { text: "Keep him lying down or semi-recumbent and move him on the stretcher, not walking or carried upright. Keep monitoring and oxygen on, have IM adrenaline drawn up for any relapse, and convey for observation because of the risk of a biphasic reaction.", tier: "correct",
+          { text: "Move him lying down on the stretcher, keep him monitored with adrenaline drawn up, and convey for observation.", tier: "correct",
             feedback: "Correct. Sudden posture change can cause collapse while his circulation is still recovering. Everyone with anaphylaxis is conveyed, and this child needed three doses." },
-          { text: "Let him walk slowly to the ambulance with support, now that his BP has recovered.", tier: "caution",
+          { text: "Let him walk slowly to the ambulance with support now his BP has recovered, then monitor and convey for observation.", tier: "caution",
             feedback: "Not quite. A recovering BP isn't a stable BP. Walking increases demand and risks collapse. Move him lying down." },
-          { text: "Convey, but take off the monitoring and oxygen to reduce his distress now that he's stable.", tier: "caution",
+          { text: "Move him on the stretcher, but remove the monitoring and oxygen to reduce his distress, then convey for observation.", tier: "caution",
             feedback: "Not quite. He can relapse at any point. Continuous monitoring is how you'd spot it." },
-          { text: "Leave him at home with his parents and a new auto-injector, since he's responded well.", tier: "unsafe",
+          { text: "He's responded well, so leave him at home with his parents and a replacement auto-injector, with clear safety-netting advice.", tier: "unsafe",
             feedback: "Unsafe. He needed three doses of adrenaline and fluids, and he's at risk of a biphasic reaction. He must be observed in hospital." }
         ],
         eyebrow: "Case 5 · Twist"
@@ -744,13 +744,13 @@ const CASES = [
         tier: "Identify",
         question: "What are your first actions?",
         options: [
-          { text: "Open the airway with a gentle head tilt and chin lift (he's over 12 months and there's no spinal mechanism), suction as needed, give 5 rescue breaths with BVM and 15 L oxygen, check a carotid or femoral pulse for up to 10 seconds, then start 15:2. Get his wet clothes off and dry him.", tier: "correct",
+          { text: "Head tilt and chin lift, suction, 5 rescue breaths with BVM and oxygen, carotid pulse check, then 15:2. Strip and dry him.", tier: "correct",
             feedback: "Correct. Drowning is a hypoxic arrest, so rescue breaths matter most. At 13 months he's a child for pulse checks and airway positioning, and stopping further heat loss starts now." },
-          { text: "Use a jaw thrust and full spinal immobilisation, because every drowning should be treated as a spinal injury.", tier: "caution",
+          { text: "Jaw thrust with full spinal immobilisation, as every drowning is a possible spinal injury, then 5 rescue breaths and 15:2.", tier: "caution",
             feedback: "Not quite. Spinal precautions are for drownings with a mechanism, such as diving or a fall from height. A toddler slipping into a shallow pond doesn't have one, and immobilisation would delay ventilation." },
-          { text: "Check the brachial pulse, as he's still a baby.", tier: "caution",
+          { text: "Head tilt and chin lift, suction, 5 rescue breaths with BVM and oxygen, brachial pulse check, then 15:2. Strip and dry him.", tier: "caution",
             feedback: "Not quite. Over 12 months he's classed as a child, so check the carotid (or femoral) pulse. The brachial site is for infants under 1 year." },
-          { text: "Turn him head down and give abdominal thrusts to drain the water from his lungs before ventilating.", tier: "unsafe",
+          { text: "Turn him head down and give abdominal thrusts to drain water from his lungs, then 5 rescue breaths and 15:2.", tier: "unsafe",
             feedback: "Unsafe. Very little water is aspirated in most drownings, and trying to drain it wastes time and risks regurgitation. Clear the airway with suction and ventilate." }
         ],
         eyebrow: "Case 6 · First Contact"
@@ -765,13 +765,13 @@ const CASES = [
         tier: "Prioritise",
         question: "How do you manage drugs given the temperature reading?",
         options: [
-          { text: "Give adrenaline 100 micrograms (1 ml of 1 in 10,000) IO now and flush with 20 ml of sodium chloride 0.9%. LO can't distinguish 30 to 34°C from under 30°C, but a short submersion points to the 30 to 35°C band, so double the interval to every 6 to 10 minutes. Prevent further heat loss and request enhanced care for a core temperature.", tier: "correct",
-            feedback: "Correct. In the non-shockable pathway adrenaline goes in on access. With a LO reading, use the exposure history to judge the likely band, and say how you reached that judgement in your handover." },
-          { text: "Withhold all drugs until he's warmer than 30°C.", tier: "caution",
+          { text: "Adrenaline 100 micrograms IO now. The short submersion suggests 30 to 35°C, so repeat it every 6 to 10 minutes.", tier: "correct",
+            feedback: "Correct. In the non-shockable pathway adrenaline goes in on access, flushed with 20 ml. A LO reading can't separate 30 to 34°C from below 30°C, so use the exposure history to judge the likely band and explain that judgement in your handover. Prevent further heat loss and request enhanced care for a core temperature." },
+          { text: "The LO reading means he could be below 30°C, so withhold all drugs until a core temperature confirms he's above 30°C.", tier: "caution",
             feedback: "Not quite. Even under 30°C a single dose of arrest drugs is given. Nothing here suggests he's below 30°C, so he should be getting adrenaline at the extended interval." },
-          { text: "Give adrenaline 100 micrograms every 3 to 5 minutes. The temperature doesn't change anything.", tier: "caution",
+          { text: "Adrenaline 100 micrograms IO now, repeated every 3 to 5 minutes. A LO reading doesn't change the standard interval.", tier: "caution",
             feedback: "Not quite. The dose is right, but between 30 and 35°C the dose interval is doubled, as drugs are metabolised more slowly and can accumulate." },
-          { text: "Give adrenaline 1 mg IO.", tier: "unsafe",
+          { text: "Adrenaline 1 mg IO now. The short submersion suggests 30 to 35°C, so repeat it every 6 to 10 minutes.", tier: "unsafe",
             feedback: "Unsafe. 1 mg is the adult dose, ten times the 10 micrograms/kg this 10 kg child needs." }
         ],
         eyebrow: "Case 6 · Full Picture"
@@ -786,13 +786,13 @@ const CASES = [
         tier: "Anticipate",
         question: "What do you do now?",
         options: [
-          { text: "Continue resuscitation and convey to the nearest suitable ED with CPR ongoing and a pre-alert. Invite mum to be with him, with a crew member supporting her and explaining honestly what's happening.", tier: "correct",
+          { text: "Continue CPR and convey with a pre-alert. Invite mum to be with him, with a crew member supporting her.", tier: "correct",
             feedback: "Correct. Children are almost always resuscitated and conveyed, and hypothermia after drowning makes this even more important. Parents who were present cope better afterwards and know everything was tried." },
-          { text: "Continue CPR on scene and wait for enhanced care before moving him.", tier: "caution",
+          { text: "Continue CPR on scene and wait for enhanced care to arrive before moving him, keeping mum updated from the doorway.", tier: "caution",
             feedback: "Not quite. Request enhanced care, but don't wait on scene for it. If it isn't immediately available, convey with ongoing resuscitation." },
-          { text: "Keep mum out of the room so she doesn't see the resuscitation.", tier: "caution",
+          { text: "Continue CPR and convey with a pre-alert, but keep mum out of the room so she doesn't see the resuscitation.", tier: "caution",
             feedback: "Not quite. Evidence supports offering parents the chance to be present, with someone to support them. It's distressing, but being excluded is often harder in the long run." },
-          { text: "Stop resuscitation. Twenty minutes of asystole after drowning is not survivable.", tier: "unsafe",
+          { text: "Stop resuscitation, as 20 minutes of asystole after drowning isn't survivable, and support mum with the news.", tier: "unsafe",
             feedback: "Unsafe. A cold, drowned child must not be pronounced dead on scene. Resuscitation continues to hospital." }
         ],
         eyebrow: "Case 6 · Twist"
