@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paediatric Critical Care · 6 Cases | 6PC502</title>
+<style>
+  :root{
+    --crimson:#A4133C;
+    --crimson-dark:#6B0F2B;
+    --navy:#1B1B2F;
+    --navy-light:#2A2A45;
+    --amber:#E9A23B;
+    --amber-light:#F4C77A;
+    --white:#FFFFFF;
+    --offwhite:#F7F7F9;
+    --ink:#242430;
+    --muted:#6B6B7A;
+    --green:#2E9E5B;
+    --panel-light:#EFEFF3;
+    --panel-dark:#2A2A45;
+    --focus-ring:#1B6FD6;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Calibri','Segoe UI',Arial,sans-serif;
+    background:var(--offwhite);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Cambria','Georgia',serif;
+    margin:0;
+    font-weight:700;
+  }
+  button{font-family:inherit;}
+
+  /* ---------- focus & motion ---------- */
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--focus-ring);
+    outline-offset:2px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- ECG progress rail ---------- */
+  .ecg-rail{
+    position:sticky; top:0; z-index:20;
+    background:var(--navy);
+    padding:14px 0 10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .ecg-rail svg{display:block; width:100%; height:46px;}
+  .ecg-trace-calm, .ecg-trace-vf{
+    fill:none; stroke:var(--amber); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;
+    transition:opacity 0.4s ease;
+  }
+  .ecg-trace-vf{opacity:0; stroke:var(--crimson);}
+  body.stage-2 .ecg-trace-calm{opacity:0;}
+  body.stage-2 .ecg-trace-vf{opacity:1;}
+
+  .stage-dots{
+    max-width:760px; margin:0 auto; padding:0 24px;
+    display:flex; justify-content:space-between;
+  }
+  .dot-item{
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:0.04em; color:#8A8AA8; font-weight:700;
+    text-transform:uppercase;
+  }
+  .dot-item .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:#454566; flex:none;
+    transition:background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .dot-item.active{color:var(--amber-light);}
+  .dot-item.active .dot{background:var(--amber); box-shadow:0 0 0 4px rgba(233,162,59,0.22);}
+  .dot-item.done .dot{background:var(--green);}
+  .dot-item.done{color:#cfe9da;}
+
+  /* ---------- top bar ---------- */
+  .top-bar{
+    max-width:840px; margin:0 auto; padding:28px 24px 6px;
+  }
+  .eyebrow{
+    font-size:13px; font-weight:700; letter-spacing:0.12em; color:var(--crimson);
+    text-transform:uppercase; margin-bottom:6px;
+  }
+  .case-title{font-size:26px; color:var(--navy);}
+  .instruction{
+    margin-top:10px; font-size:14px; color:var(--muted); font-style:italic;
+  }
+
+  /* ---------- main / stages ---------- */
+  main{max-width:840px; margin:0 auto; padding:18px 24px 64px;}
+  .stage{display:none;}
+  .stage.visible{display:block; animation:fadeIn 0.35s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .stage-card{
+    border-radius:14px;
+    padding:28px 30px;
+    background:var(--white);
+    box-shadow:0 6px 20px rgba(20,20,40,0.06);
+  }
+  .stage.dark .stage-card{
+    background:var(--navy);
+    box-shadow:0 6px 24px rgba(0,0,0,0.35);
+  }
+  .stage-eyebrow{
+    font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--crimson); margin-bottom:8px;
+  }
+  .stage.dark .stage-eyebrow{color:var(--amber);}
+  .stage-title{font-size:22px; color:var(--navy); margin-bottom:16px;}
+  .stage.dark .stage-title{color:var(--white);}
+
+  .narrative{font-size:16px; color:var(--ink); margin-bottom:18px;}
+  .stage.dark .narrative{color:var(--white);}
+
+  .badge-row{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px;}
+  .badge{
+    background:var(--amber-light); color:var(--crimson-dark);
+    font-weight:700; font-size:13px; padding:8px 16px; border-radius:999px;
+  }
+
+  .content-grid{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:22px; margin-bottom:8px;
+  }
+  @media (max-width:640px){ .content-grid{grid-template-columns:1fr;} }
+
+  .vitals-card{
+    background:var(--panel-light); border-radius:12px; padding:18px 20px;
+  }
+  .stage.dark .vitals-card{background:var(--panel-dark);}
+  .vitals-label{
+    font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--crimson); margin-bottom:10px;
+  }
+  .stage.dark .vitals-label{color:var(--amber-light);}
+  .vitals-row{display:flex; justify-content:space-between; gap:10px; padding:7px 0; font-size:14.5px;}
+  .vitals-row + .vitals-row{border-top:1px solid rgba(0,0,0,0.06);}
+  .stage.dark .vitals-row + .vitals-row{border-top:1px solid rgba(255,255,255,0.08);}
+  .vitals-row .k{color:var(--muted);}
+  .stage.dark .vitals-row .k{color:#A8A8C8;}
+  .vitals-row .v{font-weight:700; font-family:'Consolas','Courier New',monospace; text-align:right;}
+  .stage.dark .vitals-row .v{color:var(--white);}
+
+  .monitor-wrap{display:flex; flex-direction:column; align-items:center;}
+  .monitor-wrap img{
+    width:100%; max-width:240px; border-radius:8px;
+    box-shadow:0 8px 18px rgba(0,0,0,0.22);
+  }
+  .monitor-caption{font-size:12.5px; font-style:italic; color:var(--muted); margin-top:8px; text-align:center;}
+  .stage.dark .monitor-caption{color:#C9C9DC;}
+
+  /* ---------- question / options ---------- */
+  .question-block{margin-top:22px;}
+  .tier-label{
+    font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--crimson); margin-bottom:6px;
+  }
+  .stage.dark .tier-label{color:var(--amber);}
+  .question-text{font-size:16px; font-weight:700; color:var(--ink); margin-bottom:14px;}
+  .stage.dark .question-text{color:var(--white);}
+
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    display:block; width:100%; text-align:left;
+    border:2px solid #DDDDE6; background:var(--white);
+    border-radius:10px; padding:13px 16px; font-size:14.5px; color:var(--ink);
+    cursor:pointer; transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .stage.dark .option{background:var(--navy-light); border-color:#3C3C5C; color:var(--white);}
+  .option:hover{border-color:var(--amber);}
+  .option.selected{border-color:var(--navy); background:#F2F2FF;}
+  .stage.dark .option.selected{border-color:var(--amber); background:#33335A;}
+  .option[disabled]{cursor:default;}
+
+  .option-tag{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px; margin-left:10px;
+    vertical-align:middle;
+  }
+  .tag-correct{background:#DFF3E6; color:#1E7A45;}
+  .tag-caution{background:#FBE9CC; color:#8A5A12;}
+  .tag-unsafe{background:#F7DCE2; color:#8C1133;}
+
+  .feedback{
+    margin-top:14px; padding:14px 16px; border-radius:10px; font-size:14.5px;
+    display:none;
+  }
+  .feedback.show{display:block; animation:fadeIn 0.25s ease;}
+  .feedback.tier-correct{background:#E7F6EC; border:1px solid #BFE6CC; color:#1E5631;}
+  .feedback.tier-caution{background:#FDF1DC; border:1px solid #F2D6A0; color:#6B4710;}
+  .feedback.tier-unsafe{background:#FBE3E8; border:1px solid #EFB9C5; color:#6B0F2B;}
+  .feedback strong{display:block; margin-bottom:3px;}
+
+  /* ---------- case menu ---------- */
+  .menu-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:8px;}
+  @media (max-width:760px){ .menu-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:480px){ .menu-grid{grid-template-columns:1fr;} }
+  .menu-card{
+    position:relative; text-align:center; background:var(--panel-light); border:2px solid transparent;
+    border-radius:12px; padding:22px 18px; cursor:pointer; transition:border-color 0.15s ease, transform 0.15s ease;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:108px;
+  }
+  .menu-card:hover{border-color:var(--amber); transform:translateY(-2px);}
+  .menu-card-title{font-family:'Cambria',serif; font-weight:700; font-size:21px; color:var(--navy);}
+  .menu-card-cta{font-size:13px; font-weight:700; color:var(--crimson-dark);}
+  .menu-card.completed{background:#E7F6EC; border-color:#BFE6CC;}
+  .menu-card-badge{
+    position:absolute; top:14px; right:14px; font-size:11px; font-weight:700; color:#1E5631;
+  }
+
+  /* ---------- intro screen ---------- */
+  .intro-block-label{
+    font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--crimson); margin:24px 0 10px;
+  }
+  .prereq-list{margin:0; padding:0; list-style:none;}
+  .prereq-list li{
+    position:relative; padding-left:20px; margin-bottom:9px; font-size:14.5px; color:var(--ink);
+  }
+  .prereq-list li::before{
+    content:""; position:absolute; left:0; top:7px; width:8px; height:8px; border-radius:50%;
+    background:var(--amber);
+  }
+  .intro-steps{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  @media (max-width:640px){ .intro-steps{grid-template-columns:1fr;} }
+  .intro-step{background:var(--panel-light); border-radius:10px; padding:16px;}
+  .intro-step-head{font-weight:700; font-size:14px; color:var(--navy); margin-bottom:2px;}
+  .intro-step-tier{
+    font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--crimson); margin-bottom:8px;
+  }
+  .intro-step-desc{font-size:13px; color:var(--muted);}
+
+  /* ---------- continue / nav ---------- */
+  .nav-row{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:26px;
+  }
+  .back-link{
+    font-size:13.5px; color:var(--muted); background:none; border:none; cursor:pointer; padding:8px 0;
+  }
+  .stage.dark .back-link{color:#A8A8C8;}
+  .back-link:hover{color:var(--crimson);}
+
+  .continue-btn{
+    background:var(--crimson); color:var(--white); border:none;
+    padding:13px 26px; border-radius:999px; font-size:15px; font-weight:700;
+    cursor:pointer; transition:background 0.15s ease, opacity 0.15s ease;
+  }
+  .continue-btn:hover:not(:disabled){background:var(--crimson-dark);}
+  .continue-btn:disabled{background:#CFCFDA; color:#8A8A9A; cursor:not-allowed;}
+  .stage.dark .continue-btn:disabled{background:#3C3C5C; color:#7A7A98;}
+
+  /* ---------- summary ---------- */
+  .summary .stage-card{text-align:left;}
+  .score-banner{
+    display:flex; align-items:center; gap:18px; background:var(--panel-light);
+    border-radius:12px; padding:20px; margin-bottom:22px;
+  }
+  .score-num{font-size:40px; font-family:'Cambria',serif; font-weight:700; color:var(--crimson);}
+  .score-sub{font-size:14px; color:var(--muted);}
+  .recap-list{margin:0; padding:0; list-style:none;}
+  .recap-list li{padding:10px 0; border-top:1px solid #E4E4EC; font-size:14.5px;}
+  .recap-list li:first-child{border-top:none;}
+  .recap-list b{color:var(--crimson-dark);}
+  .restart-btn{
+    margin-top:22px; background:none; border:2px solid var(--crimson); color:var(--crimson);
+    padding:11px 22px; border-radius:999px; font-size:14.5px; font-weight:700; cursor:pointer;
+  }
+  .restart-btn:hover{background:var(--crimson); color:var(--white);}
+
+  .paed-monitor{width:100%; max-width:300px;}
+  .paed-monitor svg{display:block; width:100%; height:auto; border-radius:10px; box-shadow:0 8px 18px rgba(0,0,0,0.22);}
+  .menu-card-kind{font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);}
+  .menu-card-teaser{font-size:13px; color:var(--ink);}
+  .intro-opening{font-size:15px; color:var(--ink); margin:0 0 4px;}
+  .dose-note{margin-top:18px; font-size:12.5px; color:var(--muted); font-style:italic;}
+  footer{
+    max-width:840px; margin:0 auto; padding:0 24px 40px; font-size:12px; color:var(--muted);
+  }
+</style>
+</head>
+<body class="stage-0">
+
+  <div class="ecg-rail" aria-hidden="true">
+    <svg viewBox="0 0 800 46" preserveAspectRatio="none">
+      <path class="ecg-trace-calm" d="M0,23 L60,23 L75,23 L85,4 L95,40 L105,16 L120,23 L260,23 L275,23 L285,4 L295,40 L305,16 L320,23 L460,23 L475,23 L485,4 L495,40 L505,16 L520,23 L660,23 L675,23 L685,4 L695,40 L705,16 L720,23 L800,23"/>
+      <path class="ecg-trace-vf" d="M0,23 C20,8 40,38 60,12 C80,34 95,4 115,30 C135,10 150,40 170,14 C190,32 205,6 225,28 C245,12 260,38 280,16 C300,30 315,8 335,26 C355,14 370,36 390,18 C410,28 425,10 445,24 C465,16 480,34 500,20 C520,26 535,12 555,22 C575,18 590,30 610,16 C630,28 645,12 665,24 C685,18 700,32 720,18 C740,26 755,14 775,22 L800,20"/>
+    </svg>
+    <div class="stage-dots">
+      <div class="dot-item" data-dot="0"><span class="dot"></span><span>First Contact</span></div>
+      <div class="dot-item" data-dot="1"><span class="dot"></span><span>Full Picture</span></div>
+      <div class="dot-item" data-dot="2"><span class="dot"></span><span>Twist</span></div>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div class="eyebrow">6PC502 · Paediatric Critical Care</div>
+    <h1 class="case-title" id="case-title-text">Six Paediatric Cases: Choose One to Begin</h1>
+    <p class="instruction" id="instruction-text">Pick a case below to start. Each one takes about 5 to 10 minutes. A mix of cardiac arrests and critically unwell children.</p>
+  </div>
+
+  <main id="app"></main>
+
+  <footer id="footer-text">6PC502 · Providing Critical Care in Paramedic Practice · Paediatric self-study</footer>
+
+<script>
+const CASES = [
+  {
+    num: 1,
+    kind: "Cardiac arrest",
+    title: "Case 1 · Sudden Collapse at School",
+    intro_opening: "This case tests whether you recognise a primary cardiac arrest in a child and can calculate weight-based energy and drug doses under pressure. If anything below feels unfamiliar, review the Paediatric ALS session first.",
+    prereqs: [
+      "Hypoxic versus primary cardiac causes of paediatric arrest",
+      "Paediatric pad selection by age",
+      "Energy at 4 J/kg, rounded up to the next Zoll setting, and escalation after the fifth shock",
+      "Adrenaline and amiodarone timing in shockable rhythms"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "6-Year-Old Girl Collapses During a PE Lesson",
+        narrative: "You're called to a primary school. A 6-year-old girl was running laps in PE when she collapsed without warning. Her teacher found her unresponsive and not breathing normally and started CPR straight away. Her mum has told the school she had heart surgery as a baby. The school AED is still being fetched from reception.",
+        badges: ["6F", "Est. 21 kg", "Collapse on exertion", "Repaired congenital heart disease", "Bystander CPR"],
+        vitals: null, monitor: null,
+        tier: "Identify",
+        question: "What is your priority as you take over?",
+        options: [
+          { text: "Take over 15:2 CPR with BVM and 15 L oxygen, and get paediatric pads on and the rhythm analysed as fast as possible. Sudden collapse on exertion with a cardiac history points to a primary cardiac cause and a likely shockable rhythm.", tier: "correct",
+            feedback: "Correct. Most paediatric arrests are hypoxic, but this one isn't. Sudden collapse during exertion in a child with a cardiac history often presents in VF or pulseless VT, and survival depends on rapid defibrillation." },
+          { text: "Give 5 rescue breaths and a full minute of CPR before attaching pads, as hypoxia is the commonest cause of paediatric arrest.", tier: "caution",
+            feedback: "Not quite. That's the right default for a hypoxic arrest, but this history points to a cardiac cause. Ventilation still matters, but delaying rhythm analysis here delays the shock most likely to work." },
+          { text: "Use adult pads because she is tall for her age and will need higher energies.", tier: "caution",
+            feedback: "Not quite. Paediatric pads are used from 1 to 8 years. Adult pads are reserved for over-8s, or used only when paediatric pads aren't available. Energy is set on the monitor by weight, not by pad choice." },
+          { text: "Ask the teacher to stop CPR so you can check for signs of life and a carotid pulse for 30 seconds before deciding what to do.", tier: "unsafe",
+            feedback: "Unsafe. Pulse and breathing checks take up to 10 seconds. A 30-second pause in an ongoing arrest drops coronary perfusion to nothing and delays defibrillation." }
+        ],
+        eyebrow: "Case 1 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "The Monitor Shows Coarse VF",
+        narrative: null, badges: null,
+        vitals: { label: "On the monitor", rows: [["Rhythm", "Coarse VF"], ["Response", "Unresponsive"], ["Breathing", "Absent"], ["Pads", "Paediatric, anterior-lateral"], ["Weight", "21 kg (JRCALC 6 years)"], ["Collapse to pads", "~6 minutes"]] },
+        monitor: { rhythm: "vf", caption: "Coarse VF", hr: null, spo2: null, etco2: "1.9" },
+        tier: "Prioritise",
+        question: "What energy do you select for the first shock?",
+        options: [
+          { text: "4 J/kg × 21 kg = 84 J. The Zoll can't deliver 84 J, so round up to 85 J. Shock, then resume 15:2 CPR immediately without a pulse check.", tier: "correct",
+            feedback: "Correct. Calculate at 4 J/kg and round up to the next setting the defibrillator can deliver. She wasn't monitored by the crew at the point of collapse, so this is a single shock followed straight away by 2 minutes of CPR." },
+          { text: "4 J/kg × 21 kg = 84 J. Round down to 70 J to avoid over-shocking a small child.", tier: "caution",
+            feedback: "Not quite. Guidance is to round up to the next available energy. 70 J is well under 4 J/kg and reduces the chance of successful defibrillation." },
+          { text: "Start at 85 J and escalate with each shock (85 J, 100 J, 120 J) in the same way as the adult sequence.", tier: "caution",
+            feedback: "Not quite. Paediatric energy doesn't climb shock by shock. It stays at 4 J/kg for the first five shocks and increases to 8 J/kg only after the fifth." },
+          { text: "Select 200 J. She's in VF and the highest energy gives the best chance of conversion.", tier: "unsafe",
+            feedback: "Unsafe. 200 J is nearly 10 J/kg for a 21 kg child, more than double the recommended dose. Paediatric energy is always weight based." }
+        ],
+        eyebrow: "Case 1 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "Still in VF After the Fifth Shock",
+        narrative: "You've given five shocks at 85 J. After the third shock she received adrenaline and amiodarone through a tibial IO, flushed as per JRCALC. The monitor shows VF again at the next rhythm check. Your crewmate asks what changes now.",
+        badges: null,
+        vitals: { label: "Arrest so far", rows: [["Shocks", "5 × 85 J"], ["Adrenaline", "1 dose, 210 micrograms"], ["Amiodarone", "1 dose, 100 mg"], ["Rhythm", "VF (refractory)"], ["EtCO₂", "2.1 kPa, good waveform"]] },
+        monitor: { rhythm: "vf", caption: "Refractory VF", hr: null, spo2: null, etco2: "2.1" },
+        tier: "Anticipate",
+        question: "What changes after the fifth shock?",
+        options: [
+          { text: "Increase energy to 8 J/kg (168 J, rounded up to 200 J on the Zoll). Give a second amiodarone dose at the same 100 mg (3.3 ml), flushed with 20 ml, and adrenaline 210 micrograms (2.1 ml) as it's due. Request enhanced care and plan conveyance with ongoing resuscitation.", tier: "correct",
+            feedback: "Correct. Current guidance escalates to 8 J/kg after the fifth shock, rounded up to the next available setting. In children under 10 the second amiodarone dose is the same as the first, not half. Adrenaline continues every 3 to 5 minutes." },
+          { text: "Keep shocking at 85 J. Paediatric energy is never escalated.", tier: "caution",
+            feedback: "Not quite. That was older teaching. Energy now increases to 8 J/kg after the fifth shock if VF or pVT persists." },
+          { text: "Escalate to 200 J, and give a second amiodarone dose of 50 mg, half of the first, in line with the adult sequence.", tier: "caution",
+            feedback: "Not quite on the drug. The energy is right, but in children under 10 the fifth-shock amiodarone dose is the same as the third-shock dose: 5 mg/kg, which is 100 mg here." },
+          { text: "Stop drugs and shocks, as refractory VF in a child with structural heart disease is unlikely to respond. Start talking to staff about stopping.", tier: "unsafe",
+            feedback: "Unsafe. Children are almost always resuscitated and conveyed with ongoing CPR. Good EtCO₂ and persistent VF are reasons to keep going, not to stop." }
+        ],
+        eyebrow: "Case 1 · Twist"
+      }
+    ],
+    recap: [
+      ["Not every paediatric arrest is hypoxic.", "Sudden collapse on exertion, especially with a cardiac history, should make you think shockable and push for early defibrillation."],
+      ["Energy is weight based and rounded up.", "4 J/kg to the next available Zoll setting, then 8 J/kg after the fifth shock."],
+      ["The second amiodarone is a full dose in under-10s.", "5 mg/kg after the third and fifth shocks, each flushed with 20 ml of sodium chloride 0.9%."]
+    ]
+  },
+  {
+    num: 2,
+    kind: "Critically unwell",
+    title: "Case 2 · Fever and a Rash",
+    intro_opening: "This case tests early recognition of meningococcal sepsis, weight-based antibiotic and fluid dosing, and keeping a running total of what you've given. If anything below feels unfamiliar, review the Paediatric ALS session and your sepsis notes first.",
+    prereqs: [
+      "Recognising compensated shock in a young child",
+      "Benzylpenicillin dosing by age",
+      "Fluid boluses at 10 ml/kg and the maximum including flushes",
+      "Hypoglycaemia thresholds and glucose 10% dosing"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "2-Year-Old Boy, Feverish Overnight, Now Hard to Wake",
+        narrative: "You're called by a dad whose 2-year-old son has had a temperature since last night. This morning he's been sleepy and won't drink. Dad noticed some purple spots on his legs that he thought were bruises. On arrival the child is lying limp on the sofa. He opens his eyes to your voice but doesn't engage. His hands and feet are cold and his legs look mottled. Several spots on his shins and trunk don't fade under a glass.",
+        badges: ["2M", "Est. 12 kg", "Non-blanching rash", "Cold peripheries", "Responds to voice"],
+        vitals: null, monitor: null,
+        tier: "Identify",
+        question: "What is your impression and immediate plan?",
+        options: [
+          { text: "Suspected meningococcal sepsis. This is time critical: high-flow oxygen, rapid ABCDE, early vascular access, benzylpenicillin and fluids without delay, an early pre-alert and minimal time on scene.", tier: "correct",
+            feedback: "Correct. Fever with a non-blanching rash, altered responsiveness and poor peripheral perfusion is meningococcal disease until proven otherwise. Treatment and conveyance must not wait for a full work-up on scene." },
+          { text: "Probable sepsis. Complete a full history and head-to-toe survey on scene first so your handover is complete, then decide on treatment.", tier: "caution",
+            feedback: "Not quite. Your instinct is right, but the sequence is wrong. This child is deteriorating, so treatment and conveyance run in parallel with your assessment, not after it." },
+          { text: "Likely viral illness. Some of the spots look like bruises, so check the rest with a glass before deciding.", tier: "caution",
+            feedback: "Not quite. Even one non-blanching spot in a febrile, drowsy, poorly perfused child is enough. Don't let the other features be explained away." },
+          { text: "Give paracetamol and reassess in 30 minutes. If his temperature comes down and he perks up, safety-net and leave him at home.", tier: "unsafe",
+            feedback: "Unsafe. A response to antipyretics doesn't rule out serious bacterial illness. This child needs antibiotics and hospital now." }
+        ],
+        eyebrow: "Case 2 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "Tachycardic, Poorly Perfused, Hypotensive",
+        narrative: "Two IV attempts fail, so your colleague sites a tibial IO. Dad mentions his son once came out in a rash while taking amoxicillin for an ear infection.",
+        badges: null,
+        vitals: { label: "Assessment findings", rows: [["HR", "178/min"], ["RR", "44/min"], ["SpO₂", "93% air"], ["CRT", "5 seconds"], ["BP", "72/40"], ["Temp", "39.4°C"], ["BM", "4.1 mmol/L"], ["AVPU", "V"]] },
+        monitor: { rhythm: "sinus", rate: 178, caption: "Sinus tachycardia, 178/min", hr: 178, spo2: 93, etco2: null },
+        tier: "Prioritise",
+        question: "What drugs and fluids do you give?",
+        options: [
+          { text: "Benzylpenicillin 600 mg IO (1 to 9 years) and a sodium chloride 0.9% bolus of 10 ml/kg (120 ml). Reassess after the bolus. A rash with amoxicillin isn't a contraindication.", tier: "correct",
+            feedback: "Correct. Only a history of anaphylaxis to penicillin contraindicates benzylpenicillin. The fluid bolus for a medical emergency is 10 ml/kg, repeated once if needed, with a maximum of 240 ml including flushes for this age." },
+          { text: "Benzylpenicillin 300 mg IO and a 120 ml sodium chloride 0.9% bolus.", tier: "caution",
+            feedback: "Not quite on the antibiotic. 300 mg is the under-1 dose. At 2 years old he needs 600 mg." },
+          { text: "Benzylpenicillin 600 mg IO and a single 20 ml/kg (240 ml) bolus to correct his shock faster.", tier: "caution",
+            feedback: "Not quite on the fluid. JRCALC gives 10 ml/kg aliquots with reassessment in between. Giving the full maximum in one go removes your chance to spot fluid overload and leaves nothing for flushes." },
+          { text: "Withhold benzylpenicillin because of the previous amoxicillin rash, give fluids, and let hospital decide on antibiotics.", tier: "unsafe",
+            feedback: "Unsafe. A non-specific rash isn't anaphylaxis. Delaying antibiotics in meningococcal sepsis significantly increases the risk of death and disability." }
+        ],
+        eyebrow: "Case 2 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "En Route: More Drowsy, and the BM Has Dropped",
+        narrative: "Ten minutes into the journey he only responds to pain. His heart rate has crept up and his CRT is 6 seconds. You recheck his BM. So far he has had the 120 ml bolus plus 20 ml of sodium chloride flushes.",
+        badges: null,
+        vitals: { label: "Reassessment", rows: [["HR", "186/min"], ["CRT", "6 seconds"], ["AVPU", "P"], ["BM", "2.6 mmol/L"], ["NaCl 0.9% given", "140 ml (bolus + flushes)"]] },
+        monitor: { rhythm: "sinus", rate: 186, caption: "Sinus tachycardia, 186/min", hr: 186, spo2: 94, etco2: null },
+        tier: "Anticipate",
+        question: "What do you do now?",
+        options: [
+          { text: "Treat the hypoglycaemia with glucose 10% 2 ml/kg (24 ml) IO, flushed with 10 ml. Then give a second bolus capped at 90 ml, because 240 ml minus the 150 ml already given leaves 90 ml. Recheck BM and update the pre-alert.", tier: "correct",
+            feedback: "Correct. A BM under 3.0 in a non-diabetic child is hypoglycaemia, and septic children burn through glucose. Every sodium chloride flush counts towards the 240 ml maximum, so the second bolus is trimmed to fit." },
+          { text: "Give glucose 10% 24 ml, then the full second bolus of 120 ml.", tier: "caution",
+            feedback: "Not quite on the fluid. With the earlier flushes and the glucose flush, a full 120 ml takes him to 270 ml, which is over the 240 ml maximum." },
+          { text: "Give glucagon IM, as it avoids using up your IO line.", tier: "caution",
+            feedback: "Not quite. Glucagon relies on liver glycogen, which a septic child may have used up. With working IO access, glucose 10% is faster and more reliable." },
+          { text: "Rub glucose gel into his gums and recheck his BM in 10 minutes.", tier: "unsafe",
+            feedback: "Unsafe. He only responds to pain and can't protect his airway. Oral glucose risks aspiration and is unlikely to be absorbed quickly enough." }
+        ],
+        eyebrow: "Case 2 · Twist"
+      }
+    ],
+    recap: [
+      ["A non-blanching rash with signs of illness means antibiotics now.", "Only penicillin anaphylaxis is a contraindication. Don't let a vague allergy history cause a delay."],
+      ["Keep a running fluid total.", "10 ml/kg aliquots, a maximum of 240 ml for a 2-year-old, and every flush counts."],
+      ["Check the BM again, and think beyond the patient.", "Septic children become hypoglycaemic. Siblings and close contacts need flagging for assessment and prophylaxis."]
+    ]
+  },
+  {
+    num: 3,
+    kind: "Cardiac arrest",
+    title: "Case 3 · The Floppy Infant",
+    intro_opening: "This case tests infant airway positioning, the heart rate threshold for starting compressions, and accurate small-volume drug calculation. If anything below feels unfamiliar, review the Paediatric ALS session first.",
+    prereqs: [
+      "Infant airway: neutral alignment, no head tilt, no NPA, OPA not inverted",
+      "Rescue breaths and the brachial pulse check",
+      "Starting compressions when HR is under 60/min",
+      "Adrenaline at 10 micrograms/kg and IO landmarks",
+      "Ventilation rates after ROSC"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "3-Month-Old Who 'Stopped Breathing' in Mum's Arms",
+        narrative: "Mum rings 999 because her 3-month-old son has stopped breathing. He's had a cough and a snotty nose for three days and hasn't been feeding well. On arrival he is limp and grey in her arms. Thick secretions are bubbling at his nose and mouth. He gives an occasional gasp but isn't breathing effectively.",
+        badges: ["3M", "Est. 6 kg", "3-day coryzal illness", "Poor feeding", "Agonal gasps"],
+        vitals: null, monitor: null,
+        tier: "Identify",
+        question: "What are your first actions?",
+        options: [
+          { text: "On a firm surface, hold the head in neutral alignment with padding under the shoulders, suction the secretions, then give 5 rescue breaths with a paediatric BVM on 15 L oxygen, each over 1 second, watching for chest rise. Then check the brachial pulse for up to 10 seconds.", tier: "correct",
+            feedback: "Correct. This is almost certainly a hypoxic event from bronchiolitis. Airway and ventilation come first. Infants need neutral alignment, and the shoulder padding offsets their large occiput." },
+          { text: "Open the airway with head tilt and chin lift, extending the neck well to straighten the airway, then give 5 rescue breaths.", tier: "caution",
+            feedback: "Not quite. Head tilt and chin lift isn't used under 12 months, and overextension kinks an infant's soft airway. Neutral alignment is the target." },
+          { text: "Start chest compressions immediately at 30:2 while your colleague prepares the BVM.", tier: "caution",
+            feedback: "Not quite. The ratio for healthcare providers is 15:2, and in a hypoxic infant the 5 rescue breaths come before compressions." },
+          { text: "Do a finger sweep of the mouth to clear the secretions before ventilating.", tier: "unsafe",
+            feedback: "Unsafe. Blind finger sweeps can push material further down and damage the soft palate. Use suction, or a laryngoscope with Magill's forceps for a visible foreign body." }
+        ],
+        eyebrow: "Case 3 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "Chest Rising, but the Pulse Is Slow",
+        narrative: "The rescue breaths give good chest rise. You feel a brachial pulse, but it's slow. After a further 30 seconds of effective ventilation there's no improvement and no other signs of life.",
+        badges: null,
+        vitals: { label: "Assessment findings", rows: [["Brachial pulse", "~50/min, weak"], ["Signs of life", "None"], ["SpO₂", "Not reading"], ["Ventilation", "Good chest rise"], ["Weight", "6 kg (JRCALC 3 months)"]] },
+        monitor: { rhythm: "sinus", rate: 50, broad: true, caption: "Sinus bradycardia, ~50/min", hr: 50, spo2: null, etco2: "2.4" },
+        tier: "Prioritise",
+        question: "What is your management now?",
+        options: [
+          { text: "HR under 60 with no signs of life despite good ventilation means starting 15:2 compressions at 4 cm depth. Attach paediatric pads, site an IO 1 cm medial and 1 cm distal to the tibial tuberosity, and give adrenaline 10 micrograms/kg: 60 micrograms (0.6 ml of 1 in 10,000), flushed with 20 ml of sodium chloride 0.9%.", tier: "correct",
+            feedback: "Correct. A slow heart rate with poor perfusion in an infant is treated as cardiac arrest. It follows the non-shockable pathway, so adrenaline goes in as soon as you have access." },
+          { text: "There's a pulse, so keep ventilating only and reassess every 2 minutes.", tier: "caution",
+            feedback: "Not quite. If the pulse is under 60/min and isn't improving with good ventilation, start compressions. A palpable but slow pulse doesn't perfuse an infant's brain or heart." },
+          { text: "Give atropine to treat the bradycardia before starting compressions.", tier: "caution",
+            feedback: "Not quite. Hypoxia is the most common cause of bradycardia in children, so oxygenation, ventilation and CPR come first. Atropine has no place in this arrest." },
+          { text: "Start 15:2 CPR and give adrenaline 600 micrograms (6 ml of 1 in 10,000) IO.", tier: "unsafe",
+            feedback: "Unsafe. That's a tenfold error. 10 micrograms × 6 kg = 60 micrograms, which is 0.6 ml. Decimal errors are among the most common paediatric drug errors, so check the volume aloud with your colleague." }
+        ],
+        eyebrow: "Case 3 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "ROSC, but He's Barely Breathing",
+        narrative: "After two cycles and one dose of adrenaline his heart rate picks up and colour returns. He's now making some breaths of his own, but they are shallow and slow. Mum is in the doorway asking if he's going to be okay.",
+        badges: null,
+        vitals: { label: "Post-ROSC", rows: [["HR", "148/min"], ["Spontaneous RR", "10/min, shallow"], ["SpO₂", "88% with BVM"], ["EtCO₂", "6.8 kPa"], ["BM", "Not yet checked"], ["AVPU", "U"]] },
+        monitor: { rhythm: "sinus", rate: 148, caption: "Sinus tachycardia after ROSC", hr: 148, spo2: 88, etco2: "6.8" },
+        tier: "Anticipate",
+        question: "What are your post-ROSC priorities?",
+        options: [
+          { text: "Keep assisting ventilation at 25 breaths/min (one every 2.4 seconds) with just enough volume for chest rise, then titrate oxygen to SpO₂ 94 to 98% once the reading is reliable. Recheck BM, keep him warm, leave the pads on, pre-alert the nearest paediatric ED, and bring mum with you.", tier: "correct",
+            feedback: "Correct. Ten shallow breaths a minute is inadequate for an infant, so keep ventilating at the infant rate. A paediatric BVM can deliver far more than his tidal volume, so squeeze only to chest rise." },
+          { text: "Assist ventilation at 12 breaths/min, one every 5 seconds.", tier: "caution",
+            feedback: "Not quite. That's an adult rate. Infants under 1 year need 25 breaths/min." },
+          { text: "He's breathing on his own now, so switch to a non-rebreathe mask at 15 L and monitor.", tier: "caution",
+            feedback: "Not quite. Spontaneous breathing isn't the same as adequate breathing. At 10 shallow breaths a minute, with a high EtCO₂ and SpO₂ of 88%, he still needs assisted ventilation." },
+          { text: "Squeeze the bag firmly and fast to bring his SpO₂ up as quickly as possible.", tier: "unsafe",
+            feedback: "Unsafe. Vigorous bagging in a small infant risks barotrauma and pneumothorax, and can cause gastric inflation. Ventilate only until the chest rises." }
+        ],
+        eyebrow: "Case 3 · Twist"
+      }
+    ],
+    recap: [
+      ["Infant airways are positioned, not extended.", "Neutral alignment, shoulder padding, suction rather than finger sweeps, and 5 rescue breaths first."],
+      ["Under 60 means compress.", "A slow pulse that doesn't improve with good ventilation is managed as cardiac arrest."],
+      ["Small doses need careful checking.", "10 micrograms/kg of 1 in 10,000 is 0.1 ml/kg. Say the volume aloud and cross-check before you give it."]
+    ]
+  },
+  {
+    num: 4,
+    kind: "Critically unwell to arrest",
+    title: "Case 4 · The Quiet Wheezer",
+    intro_opening: "This case tests recognising life-threatening asthma, spotting false reassurance when a child tires, and ventilating safely when the lungs are trapping air. If anything below feels unfamiliar, review the Paediatric ALS session and your asthma notes first.",
+    prereqs: [
+      "Severe versus life-threatening asthma features in children",
+      "Paediatric salbutamol and ipratropium doses, given in separate nebulisers",
+      "Signs of exhaustion in a child",
+      "Ventilating a patient with air trapping",
+      "Tension pneumothorax as a reversible cause"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "4-Year-Old Girl With Asthma, Blue Inhaler Not Working",
+        narrative: "A 4-year-old girl with known asthma has had a cold for two days. Since teatime her mum has given her blue inhaler through a spacer every 20 minutes with no effect. She's sitting bolt upright on the sofa, gripping the cushions, pale and agitated. She can't get words out. You hear very little wheeze.",
+        badges: ["4F", "Est. 16 kg", "Known asthma", "Unable to talk", "Quiet chest"],
+        vitals: { label: "Initial observations", rows: [["RR", "52/min"], ["HR", "168/min"], ["SpO₂", "89% air"], ["Chest", "Poor air entry bilaterally"]] },
+        monitor: null,
+        tier: "Identify",
+        question: "How severe is this, and what is your treatment?",
+        options: [
+          { text: "Life-threatening asthma (SpO₂ under 92%, poor air entry, agitation). Give oxygen-driven salbutamol 2.5 mg nebulised, followed by ipratropium 250 micrograms in a separate nebuliser, and hydrocortisone per JRCALC Page for Age. Keep her upright, pre-alert and convey without delay.", tier: "correct",
+            feedback: "Correct. A quiet chest in a child who can't speak is a danger sign, not reassurance. Salbutamol 2.5 mg is the under-5 dose. Ipratropium goes in its own nebuliser locally." },
+          { text: "Life-threatening asthma. Give salbutamol 2.5 mg and ipratropium 250 micrograms together in the same nebuliser to save time.", tier: "caution",
+            feedback: "Not quite. The drugs and doses are right, but locally they are never mixed in the same nebuliser. Give them one after the other." },
+          { text: "Severe asthma, as she still has some wheeze. Give 10 puffs of salbutamol via spacer and reassess on scene in 15 minutes.", tier: "caution",
+            feedback: "Not quite. SpO₂ under 92%, being unable to talk and a quiet chest make this life-threatening. Spacer treatment on scene has already failed." },
+          { text: "Lie her flat on the stretcher to calm her down, give 15 L via non-rebreathe, and save the nebulisers for hospital.", tier: "unsafe",
+            feedback: "Unsafe. Lying her flat makes breathing harder, and withholding bronchodilators in life-threatening asthma risks a hypoxic arrest." }
+        ],
+        eyebrow: "Case 4 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "Fifteen Minutes Later, She Looks Calmer",
+        narrative: "After a second salbutamol nebuliser she stops fighting the mask. Mum says she looks more relaxed. She's slumping sideways and her eyes are closing.",
+        badges: null,
+        vitals: { label: "Reassessment", rows: [["RR", "18/min, shallow"], ["HR", "92/min"], ["SpO₂", "84% on nebuliser"], ["Chest", "Silent"], ["AVPU", "V, drifting to P"]] },
+        monitor: { rhythm: "sinus", rate: 92, caption: "Heart rate falling, 92/min", hr: 92, spo2: 84, etco2: null },
+        tier: "Prioritise",
+        question: "What does this picture mean, and what do you do?",
+        options: [
+          { text: "This is exhaustion and impending arrest, not improvement. Assist her ventilation with a BVM on 15 L oxygen, at a slow rate with gentle breaths and a long gap for exhalation. Request enhanced care and move now.", tier: "correct",
+            feedback: "Correct. A falling respiratory and heart rate, rising drowsiness and a silent chest are pre-terminal signs. Slow, gentle ventilation reduces air trapping in already hyperinflated lungs." },
+          { text: "Assist ventilation at a fast rate to correct her hypoxia as quickly as possible.", tier: "caution",
+            feedback: "Not quite. She does need ventilating, but fast breaths don't give the lungs time to empty. Trapped air builds up, raising chest pressure and cutting venous return." },
+          { text: "Insert an NPA to support her airway while you continue nebulisers.", tier: "caution",
+            feedback: "Not quite. NPAs are contraindicated under 12 years. More importantly, her problem is ventilation, not airway patency." },
+          { text: "Her heart and breathing rates are settling, which shows the salbutamol is working. Continue nebulisers and monitor.", tier: "unsafe",
+            feedback: "Unsafe. Falling rates alongside falling SpO₂ and conscious level mean she is tiring. Read the whole picture, not single numbers." }
+        ],
+        eyebrow: "Case 4 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "She Arrests in the Back of the Ambulance",
+        narrative: "As you load her, her heart rate drops to 40 and you lose the carotid pulse. The monitor shows a slow, broad rhythm. Bagging is getting harder and the left side of her chest seems to rise less than the right.",
+        badges: null,
+        vitals: { label: "On the monitor", rows: [["Rhythm", "Slow broad complex, ~40/min"], ["Pulse", "Absent"], ["Chest rise", "Reduced on left"], ["Bagging", "Increasingly stiff"]] },
+        monitor: { rhythm: "sinus", rate: 40, broad: true, caption: "PEA, slow broad complex", hr: 40, spo2: null, etco2: "1.2" },
+        tier: "Anticipate",
+        question: "What is your arrest management?",
+        options: [
+          { text: "Start 15:2 CPR and give adrenaline 160 micrograms (1.6 ml) IO as soon as you have access. Ventilate gently with long exhalation times, and treat the unequal chest rise and stiff bagging as a possible tension pneumothorax, decompressing per JRCALC.", tier: "correct",
+            feedback: "Correct. This is a non-shockable, hypoxic arrest, so adrenaline goes in as soon as you have access. In asthma, air trapping and tension pneumothorax are the reversible causes to hunt for." },
+          { text: "Start CPR and give adrenaline 160 micrograms, plus amiodarone 80 mg because the complexes are broad.", tier: "caution",
+            feedback: "Not quite. Amiodarone is only for shockable rhythms. PEA is non-shockable, whatever the QRS width." },
+          { text: "Start CPR, but hold adrenaline until after the third rhythm check.", tier: "caution",
+            feedback: "Not quite. That timing belongs to the shockable pathway. In PEA and asystole, adrenaline goes in as soon as you have IV or IO access." },
+          { text: "Bag hard and fast to force oxygen past the bronchospasm.", tier: "unsafe",
+            feedback: "Unsafe. That worsens air trapping and makes a pneumothorax more likely. A paediatric BVM can deliver around 500 ml, far more than her tidal volume." }
+        ],
+        eyebrow: "Case 4 · Twist"
+      }
+    ],
+    recap: [
+      ["A quiet chest is a loud warning.", "Poor air entry, being unable to talk and SpO₂ under 92% mean life-threatening asthma."],
+      ["Calm can mean exhausted.", "Falling rates with falling SpO₂ and a falling conscious level are pre-terminal, not signs of recovery."],
+      ["Ventilate slowly and look for the pneumothorax.", "Gentle breaths, long exhalation, and keep tension pneumothorax on your 4Hs and 4Ts list."]
+    ]
+  },
+  {
+    num: 5,
+    kind: "Critically unwell",
+    title: "Case 5 · The Birthday Party",
+    intro_opening: "This case tests the anaphylaxis pathway in a school-age child, including repeat adrenaline, fluids and the danger of sitting or standing a shocked child up. If anything below feels unfamiliar, review your anaphylaxis notes first.",
+    prereqs: [
+      "IM adrenaline dosing by age and when to repeat it",
+      "Positioning in anaphylaxis",
+      "Fluid bolus volumes for medical emergencies",
+      "When anaphylaxis is refractory and needs enhanced care"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "8-Year-Old Boy With a Peanut Allergy",
+        narrative: "At a birthday party an 8-year-old boy with a known peanut allergy ate a slice of cake. Within minutes his lips swelled and he started coughing. His mum gave his adrenaline auto-injector 6 minutes ago. Now he's covered in hives, his voice is hoarse, he's wheezy and pale, and he says he feels dizzy. He's sitting on a chair and wants to stand up to go to the toilet.",
+        badges: ["8M", "Est. 25 kg", "Known peanut allergy", "1 auto-injector, 6 min ago", "Hoarse, wheezy, dizzy"],
+        vitals: null, monitor: null,
+        tier: "Identify",
+        question: "What is your immediate management?",
+        options: [
+          { text: "Anaphylaxis with airway, breathing and circulation features. Keep him from standing. Give IM adrenaline 300 micrograms (0.3 ml of 1 in 1,000) into the anterolateral thigh now, as more than 5 minutes have passed, and start high-flow oxygen.", tier: "correct",
+            feedback: "Correct. Adrenaline can be repeated after 5 minutes if there's no improvement, and 300 micrograms is the 6 to 11 year dose. Standing a shocked child up can trigger sudden collapse." },
+          { text: "Wait until 10 minutes after the auto-injector before repeating IM adrenaline, so the first dose has time to work.", tier: "caution",
+            feedback: "Not quite. The repeat interval is 5 minutes. He's still getting worse, so the second dose is due now." },
+          { text: "Give chlorphenamine and hydrocortisone first, then consider more adrenaline if he doesn't improve.", tier: "caution",
+            feedback: "Not quite. Adrenaline is the only first-line drug in anaphylaxis. Antihistamines and steroids don't treat airway swelling or shock and must never delay adrenaline." },
+          { text: "Give adrenaline 1 in 1,000 IV slowly, since IV acts faster than IM.", tier: "unsafe",
+            feedback: "Unsafe. IV adrenaline in a patient with a pulse can cause dangerous arrhythmias and is for specialists only. IM is the paramedic route." }
+        ],
+        eyebrow: "Case 5 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "Two Doses In, and Still Shocked",
+        narrative: "After the second IM dose his hoarseness eases slightly, but he's grey and clammy. You lie him down and raise his legs, and your colleague gets IV access.",
+        badges: null,
+        vitals: { label: "Assessment findings", rows: [["HR", "152/min"], ["BP", "70/40"], ["CRT", "4 seconds"], ["RR", "32/min"], ["SpO₂", "91% on O₂"], ["Chest", "Widespread wheeze"]] },
+        monitor: { rhythm: "sinus", rate: 152, caption: "Sinus tachycardia, 152/min", hr: 152, spo2: 91, etco2: null },
+        tier: "Prioritise",
+        question: "What is your next step?",
+        options: [
+          { text: "Give a sodium chloride 0.9% bolus of 10 ml/kg (250 ml) and reassess. Keep giving IM adrenaline every 5 minutes while he remains compromised, and add salbutamol for the wheeze. After two doses with ongoing shock this is refractory anaphylaxis, so request enhanced care and convey.", tier: "correct",
+            feedback: "Correct. Anaphylaxis causes significant fluid shift, so fluids support the adrenaline. Ongoing shock after two IM doses needs an adrenaline infusion, which is a specialist intervention." },
+          { text: "Give a 5 ml/kg bolus (125 ml) to avoid fluid overload.", tier: "caution",
+            feedback: "Not quite. 5 ml/kg is for trauma and heart or renal failure. A medical emergency like anaphylaxis takes 10 ml/kg." },
+          { text: "Give a 20 ml/kg bolus (500 ml) straight away, as he's profoundly hypotensive.", tier: "caution",
+            feedback: "Not quite. Give 10 ml/kg and reassess. Large single boluses remove your chance to check the response." },
+          { text: "Give hydrocortisone and wait 10 minutes for it to work before any further adrenaline.", tier: "unsafe",
+            feedback: "Unsafe. Steroids act over hours, not minutes. Holding adrenaline in ongoing shock risks cardiac arrest." }
+        ],
+        eyebrow: "Case 5 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "He's Improving, and Dad Wants to Help",
+        narrative: "After the fluid and a third IM dose he picks up. The rash is fading and his voice is clearer. Dad says he'll carry him out to the ambulance, and the boy says he's fine to walk.",
+        badges: null,
+        vitals: { label: "Reassessment", rows: [["HR", "126/min"], ["BP", "94/58"], ["SpO₂", "96% on O₂"], ["Chest", "Scattered wheeze"], ["Skin", "Urticaria fading"]] },
+        monitor: { rhythm: "sinus", rate: 126, caption: "Sinus tachycardia, 126/min", hr: 126, spo2: 96, etco2: null },
+        tier: "Anticipate",
+        question: "How do you move and manage him from here?",
+        options: [
+          { text: "Keep him lying down or semi-recumbent and move him on the stretcher, not walking or carried upright. Keep monitoring and oxygen on, have IM adrenaline drawn up for any relapse, and convey for observation because of the risk of a biphasic reaction.", tier: "correct",
+            feedback: "Correct. Sudden posture change can cause collapse while his circulation is still recovering. Everyone with anaphylaxis is conveyed, and this child needed three doses." },
+          { text: "Let him walk slowly to the ambulance with support, now that his BP has recovered.", tier: "caution",
+            feedback: "Not quite. A recovering BP isn't a stable BP. Walking increases demand and risks collapse. Move him lying down." },
+          { text: "Convey, but take off the monitoring and oxygen to reduce his distress now that he's stable.", tier: "caution",
+            feedback: "Not quite. He can relapse at any point. Continuous monitoring is how you'd spot it." },
+          { text: "Leave him at home with his parents and a new auto-injector, since he's responded well.", tier: "unsafe",
+            feedback: "Unsafe. He needed three doses of adrenaline and fluids, and he's at risk of a biphasic reaction. He must be observed in hospital." }
+        ],
+        eyebrow: "Case 5 · Twist"
+      }
+    ],
+    recap: [
+      ["Adrenaline is the treatment, early and repeated.", "300 micrograms IM for 6 to 11 years, repeated every 5 minutes while needed."],
+      ["Fluids and enhanced care for refractory shock.", "10 ml/kg for a medical emergency, and a specialist response when shock persists after two doses."],
+      ["Never stand a shocked child up.", "Move them lying down, and convey every anaphylaxis for observation."]
+    ]
+  },
+  {
+    num: 6,
+    kind: "Cardiac arrest",
+    title: "Case 6 · The Garden Pond",
+    intro_opening: "This case tests hypoxic arrest after drowning, interpreting a LO temperature reading, and the decision to continue resuscitation and convey with parents present. If anything below feels unfamiliar, review the Paediatric ALS session first.",
+    prereqs: [
+      "Drowning as a hypoxic arrest",
+      "Pulse check sites in infants and children",
+      "Hypothermic arrest bands and the WMAS LO thermometer reading",
+      "Resuscitation and conveyance decisions in children",
+      "Parental presence"
+    ],
+    stages: [
+      {
+        id: "first-contact", theme: "light",
+        title: "13-Month-Old Pulled From a Garden Pond",
+        narrative: "It's a cold November afternoon. A mum went to answer the front door and came back three or four minutes later to find her 13-month-old son face down in the shallow garden pond. She pulled him out and a neighbour started CPR. On arrival he is limp, soaking wet and cold to touch, with no signs of breathing.",
+        badges: ["13M", "Est. 10 kg", "Submersion ~3 to 4 min", "Cold, wet", "Bystander CPR"],
+        vitals: null, monitor: null,
+        tier: "Identify",
+        question: "What are your first actions?",
+        options: [
+          { text: "Open the airway with a gentle head tilt and chin lift (he's over 12 months and there's no spinal mechanism), suction as needed, give 5 rescue breaths with BVM and 15 L oxygen, check a carotid or femoral pulse for up to 10 seconds, then start 15:2. Get his wet clothes off and dry him.", tier: "correct",
+            feedback: "Correct. Drowning is a hypoxic arrest, so rescue breaths matter most. At 13 months he's a child for pulse checks and airway positioning, and stopping further heat loss starts now." },
+          { text: "Use a jaw thrust and full spinal immobilisation, because every drowning should be treated as a spinal injury.", tier: "caution",
+            feedback: "Not quite. Spinal precautions are for drownings with a mechanism, such as diving or a fall from height. A toddler slipping into a shallow pond doesn't have one, and immobilisation would delay ventilation." },
+          { text: "Check the brachial pulse, as he's still a baby.", tier: "caution",
+            feedback: "Not quite. Over 12 months he's classed as a child, so check the carotid (or femoral) pulse. The brachial site is for infants under 1 year." },
+          { text: "Turn him head down and give abdominal thrusts to drain the water from his lungs before ventilating.", tier: "unsafe",
+            feedback: "Unsafe. Very little water is aspirated in most drownings, and trying to drain it wastes time and risks regurgitation. Clear the airway with suction and ventilate." }
+        ],
+        eyebrow: "Case 6 · First Contact"
+      },
+      {
+        id: "full-picture", theme: "light",
+        title: "Asystole, and the Thermometer Reads 'LO'",
+        narrative: "Your colleague sites a tibial IO. The tympanic thermometer displays LO.",
+        badges: null,
+        vitals: { label: "Assessment findings", rows: [["Rhythm", "Asystole"], ["Ventilation", "Good chest rise"], ["Tympanic temp", "LO (below 34.0°C)"], ["Access", "Tibial IO"], ["Weight", "10 kg (JRCALC 1 year)"]] },
+        monitor: { rhythm: "asystole", caption: "Asystole", hr: null, spo2: null, etco2: "1.6" },
+        tier: "Prioritise",
+        question: "How do you manage drugs given the temperature reading?",
+        options: [
+          { text: "Give adrenaline 100 micrograms (1 ml of 1 in 10,000) IO now and flush with 20 ml of sodium chloride 0.9%. LO can't distinguish 30 to 34°C from under 30°C, but a short submersion points to the 30 to 35°C band, so double the interval to every 6 to 10 minutes. Prevent further heat loss and request enhanced care for a core temperature.", tier: "correct",
+            feedback: "Correct. In the non-shockable pathway adrenaline goes in on access. With a LO reading, use the exposure history to judge the likely band, and say how you reached that judgement in your handover." },
+          { text: "Withhold all drugs until he's warmer than 30°C.", tier: "caution",
+            feedback: "Not quite. Even under 30°C a single dose of arrest drugs is given. Nothing here suggests he's below 30°C, so he should be getting adrenaline at the extended interval." },
+          { text: "Give adrenaline 100 micrograms every 3 to 5 minutes. The temperature doesn't change anything.", tier: "caution",
+            feedback: "Not quite. The dose is right, but between 30 and 35°C the dose interval is doubled, as drugs are metabolised more slowly and can accumulate." },
+          { text: "Give adrenaline 1 mg IO.", tier: "unsafe",
+            feedback: "Unsafe. 1 mg is the adult dose, ten times the 10 micrograms/kg this 10 kg child needs." }
+        ],
+        eyebrow: "Case 6 · Full Picture"
+      },
+      {
+        id: "twist", theme: "dark",
+        title: "Twenty Minutes In, Still Asystole",
+        narrative: "Twenty minutes into the resuscitation he remains in asystole with good-quality CPR. Your crewmate quietly asks whether you should stop. His mum is in the kitchen doorway, crying and asking to be with him.",
+        badges: null,
+        vitals: { label: "Arrest so far", rows: [["Duration", "~20 minutes"], ["Rhythm", "Asystole throughout"], ["Adrenaline", "2 doses"], ["EtCO₂", "1.5 kPa"]] },
+        monitor: { rhythm: "asystole", caption: "Asystole, persisting", hr: null, spo2: null, etco2: "1.5" },
+        tier: "Anticipate",
+        question: "What do you do now?",
+        options: [
+          { text: "Continue resuscitation and convey to the nearest suitable ED with CPR ongoing and a pre-alert. Invite mum to be with him, with a crew member supporting her and explaining honestly what's happening.", tier: "correct",
+            feedback: "Correct. Children are almost always resuscitated and conveyed, and hypothermia after drowning makes this even more important. Parents who were present cope better afterwards and know everything was tried." },
+          { text: "Continue CPR on scene and wait for enhanced care before moving him.", tier: "caution",
+            feedback: "Not quite. Request enhanced care, but don't wait on scene for it. If it isn't immediately available, convey with ongoing resuscitation." },
+          { text: "Keep mum out of the room so she doesn't see the resuscitation.", tier: "caution",
+            feedback: "Not quite. Evidence supports offering parents the chance to be present, with someone to support them. It's distressing, but being excluded is often harder in the long run." },
+          { text: "Stop resuscitation. Twenty minutes of asystole after drowning is not survivable.", tier: "unsafe",
+            feedback: "Unsafe. A cold, drowned child must not be pronounced dead on scene. Resuscitation continues to hospital." }
+        ],
+        eyebrow: "Case 6 · Twist"
+      }
+    ],
+    recap: [
+      ["Drowning is hypoxic.", "Rescue breaths first. Don't try to drain water from the lungs."],
+      ["A LO reading needs clinical judgement.", "Use exposure history to decide the likely band, give the first dose of adrenaline, and adjust the interval."],
+      ["Children are resuscitated and conveyed.", "Offer parents presence, think about safeguarding and siblings, and debrief the team afterwards."]
+    ]
+  }
+];
+
+function shuffledIndices(n){
+  const arr = Array.from({length:n}, (_, i) => i);
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function freshOptionOrder(stages){
+  return stages.map(s => shuffledIndices(s.options.length));
+}
+
+const state = { activeCase: null, current: -1, firstCorrect: [null, null, null], selected: [null, null, null], optionOrder: [], completed: new Set() };
+const app = document.getElementById("app");
+
+function vitalsHTML(v){
+  if(!v) return "";
+  const rows = v.rows.map(r => `<div class="vitals-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join("");
+  return `<div class="vitals-card"><div class="vitals-label">${v.label}</div>${rows}</div>`;
+}
+
+function ecgPath(m){
+  const x0 = 12, x1 = 308, base = 68, pxPerSec = 74;
+  const g = (x, c, w, a) => a * Math.exp(-((x - c) * (x - c)) / (2 * w * w));
+  let seed = (m.rate || 7) * 13 + (m.etco2 ? m.etco2.length : 3);
+  const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  let yAt;
+  if(m.rhythm === "vf"){
+    const comps = Array.from({length:4}, () => ({f: 0.2 + rnd() * 0.22, p: rnd() * 6.28, a: 5 + rnd() * 7}));
+    yAt = x => base + comps.reduce((s, c) => s + c.a * Math.sin(c.f * x + c.p), 0) * (0.65 + 0.35 * Math.sin(x * 0.02));
+  } else if(m.rhythm === "asystole"){
+    yAt = x => base + 1.6 * Math.sin(x * 0.018) + 0.8 * Math.sin(x * 0.07 + 1);
+  } else {
+    const interval = pxPerSec * 60 / m.rate;
+    const s = Math.min(1, interval / 62);
+    const broad = m.broad ? 2.2 : 1;
+    yAt = x => {
+      const ph = ((x - x0) % interval + interval) % interval;
+      return base
+        + g(ph, 6 * s, 2.4 * s, -4)
+        + g(ph, 14 * s, 1.1 * s * broad, 4)
+        + g(ph, 16.5 * s, 1.3 * s * broad, -34)
+        + g(ph, 19 * s + (broad - 1) * 3, 1.4 * s * broad, 9)
+        + g(ph, 33 * s + (broad - 1) * 5, 5 * s, m.broad ? 6 : -8);
+    };
+  }
+  let d = "";
+  for(let x = x0; x <= x1; x += 1){ d += (x === x0 ? "M" : "L") + x + "," + yAt(x).toFixed(1) + " "; }
+  return d;
+}
+
+function monitorHTML(m){
+  if(!m) return "";
+  const hr = m.hr ? m.hr : "---";
+  const spo2 = m.spo2 ? m.spo2 : "---";
+  const etco2 = m.etco2 ? m.etco2 : "---";
+  const svg = `
+  <svg viewBox="0 0 320 190" role="img" aria-label="Monitor showing ${m.caption}">
+    <rect x="0" y="0" width="320" height="190" rx="10" fill="#0D1117"/>
+    <rect x="10" y="9" width="40" height="15" rx="3" fill="#E9A23B"/>
+    <text x="30" y="20" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#1B1B2F">PAED</text>
+    <text x="60" y="20" font-family="Arial,sans-serif" font-size="10" fill="#8FA3B8">Pads · II</text>
+    <text x="310" y="20" text-anchor="end" font-family="Consolas,monospace" font-size="11" fill="#E8EDF2">x1.0</text>
+    <line x1="10" y1="${68}" x2="310" y2="${68}" stroke="#1E2A22" stroke-width="1"/>
+    <path d="${ecgPath(m)}" fill="none" stroke="#3CFF7A" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <line x1="10" y1="122" x2="310" y2="122" stroke="#26303C" stroke-width="1"/>
+    <text x="16" y="140" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#3CFF7A">HR</text>
+    <text x="16" y="174" font-family="Consolas,monospace" font-size="30" font-weight="700" fill="#3CFF7A">${hr}</text>
+    <text x="118" y="140" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#4FD1FF">SpO₂ %</text>
+    <text x="118" y="174" font-family="Consolas,monospace" font-size="30" font-weight="700" fill="#4FD1FF">${spo2}</text>
+    <text x="216" y="140" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#FFD54A">EtCO₂ kPa</text>
+    <text x="216" y="174" font-family="Consolas,monospace" font-size="30" font-weight="700" fill="#FFD54A">${etco2}</text>
+  </svg>`;
+  return `<div class="monitor-wrap"><div class="paed-monitor">${svg}</div><div class="monitor-caption">${m.caption}</div></div>`;
+}
+
+function tagLabel(tier){
+  if(tier === "correct") return "Correct";
+  if(tier === "caution") return "Not quite";
+  return "Unsafe";
+}
+
+function updateHeader(){
+  const titleEl = document.getElementById("case-title-text");
+  const instrEl = document.getElementById("instruction-text");
+  const footEl = document.getElementById("footer-text");
+  if(state.activeCase === null){
+    titleEl.textContent = "Six Paediatric Cases: Choose One to Begin";
+    instrEl.textContent = "Pick a case below to start. Each one takes about 5 to 10 minutes. A mix of cardiac arrests and critically unwell children.";
+    footEl.textContent = "6PC502 · Providing Critical Care in Paramedic Practice · Paediatric self-study";
+  } else {
+    const c = CASES[state.activeCase];
+    const reachedSummary = state.current >= c.stages.length;
+    titleEl.textContent = reachedSummary ? c.title : `Case ${c.num}`;
+    instrEl.textContent = "Read each stage, choose the best answer, then continue. You can change your answer before continuing.";
+    footEl.textContent = `6PC502 · Providing Critical Care in Paramedic Practice · Paediatric self-study, Case ${c.num} of 6`;
+  }
+}
+
+function renderMenu(){
+  const section = document.createElement("section");
+  section.className = "stage visible";
+  section.id = "stage-menu";
+  const cardsHTML = CASES.map((c, idx) => {
+    const isDone = state.completed.has(idx);
+    return `
+      <button type="button" class="menu-card ${isDone ? "completed" : ""}" data-select-case="${idx}">
+        ${isDone ? `<span class="menu-card-badge">✓ Done</span>` : ""}
+        <div class="menu-card-title">Case ${c.num}</div>
+        <div class="menu-card-kind">${c.kind}</div>
+        <div class="menu-card-cta">${isDone ? "Review again" : "Start"} &rarr;</div>
+      </button>
+    `;
+  }).join("");
+  section.innerHTML = `<div class="menu-grid">${cardsHTML}</div>`;
+  app.appendChild(section);
+}
+
+function renderIntro(){
+  const c = CASES[state.activeCase];
+  const section = document.createElement("section");
+  section.className = "stage visible";
+  section.id = "stage-intro";
+  section.innerHTML = `
+    <div class="stage-card">
+      <div class="stage-eyebrow">Before You Begin</div>
+      <h2 class="stage-title">Welcome to Case ${c.num}</h2>
+      <p class="intro-opening">${c.intro_opening}</p>
+
+      <div class="intro-block-label">Revise before you start</div>
+      <ul class="prereq-list">${c.prereqs.map(p => `<li>${p}</li>`).join("")}</ul>
+
+      <div class="intro-block-label">How this case works</div>
+      <div class="intro-steps">
+        <div class="intro-step">
+          <div class="intro-step-head">First Contact</div>
+          <div class="intro-step-tier">Identify</div>
+          <div class="intro-step-desc">What you're given before you've assessed anything.</div>
+        </div>
+        <div class="intro-step">
+          <div class="intro-step-head">Full Picture</div>
+          <div class="intro-step-tier">Prioritise</div>
+          <div class="intro-step-desc">The full assessment lands. What matters most?</div>
+        </div>
+        <div class="intro-step">
+          <div class="intro-step-head">Twist</div>
+          <div class="intro-step-tier">Anticipate</div>
+          <div class="intro-step-desc">Something changes. What do you do now?</div>
+        </div>
+      </div>
+
+      <p class="narrative" style="margin-top:20px;">At each stage, choose the option you think is best. You'll get feedback immediately, and can change your answer before continuing. Only your first choice at each stage counts toward your score at the end.</p>
+
+      <p class="dose-note">Weights and doses follow JRCALC Page for Age and the Paediatric ALS session. Always check against the current JRCALC before using them in practice.</p>
+
+      <div class="nav-row">
+        <button type="button" class="back-link" id="menu-link-intro">&larr; All cases</button>
+        <button type="button" class="continue-btn" id="begin-btn">Begin Case ${c.num} &rarr;</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(section);
+}
+
+function render(){
+  app.innerHTML = "";
+  updateHeader();
+
+  if(state.activeCase === null){
+    renderMenu();
+    wireEvents();
+    updateRail();
+    return;
+  }
+
+  if(state.current === -1){
+    renderIntro();
+    wireEvents();
+    updateRail();
+    return;
+  }
+
+  const stages = CASES[state.activeCase].stages;
+  stages.forEach((s, idx) => {
+    const section = document.createElement("section");
+    section.className = "stage " + (s.theme === "dark" ? "dark " : "") + (idx === state.current ? "visible" : "");
+    section.id = "stage-" + s.id;
+
+    let bodyCols = "";
+    if(s.vitals && s.monitor){
+      bodyCols = `<div class="content-grid">${vitalsHTML(s.vitals)}${monitorHTML(s.monitor)}</div>`;
+    } else if(s.vitals){
+      bodyCols = vitalsHTML(s.vitals);
+    } else if(s.monitor){
+      bodyCols = monitorHTML(s.monitor);
+    }
+
+    const optionsHTML = state.optionOrder[idx].map(oi => {
+      const o = s.options[oi];
+      const isSelected = state.selected[idx] === oi;
+      return `<button type="button" class="option ${isSelected ? "selected" : ""}" data-stage="${idx}" data-opt="${oi}">${o.text}</button>`;
+    }).join("");
+
+    let feedbackHTML = "";
+    if(state.selected[idx] !== null){
+      const opt = s.options[state.selected[idx]];
+      feedbackHTML = `<div class="feedback show tier-${opt.tier}"><strong>${tagLabel(opt.tier)}</strong>${opt.feedback}</div>`;
+    }
+
+    section.innerHTML = `
+      <div class="stage-card">
+        <div class="stage-eyebrow">${s.eyebrow}</div>
+        <h2 class="stage-title">${s.title}</h2>
+        ${s.narrative ? `<p class="narrative">${s.narrative}</p>` : ""}
+        ${s.badges ? `<div class="badge-row">${s.badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>` : ""}
+        ${bodyCols}
+        <div class="question-block">
+          <div class="tier-label">${s.tier}</div>
+          <div class="question-text">${s.question}</div>
+          <div class="options">${optionsHTML}</div>
+          ${feedbackHTML}
+        </div>
+        <div class="nav-row">
+          ${idx > 0 ? `<button type="button" class="back-link" data-back="${idx}">&larr; Back</button>` : `<button type="button" class="back-link" data-back="0">&larr; Back</button>`}
+          <button type="button" class="continue-btn" data-continue="${idx}" ${state.selected[idx]===null ? "disabled" : ""}>
+            ${idx < stages.length - 1 ? "Continue" : "See summary"}
+          </button>
+        </div>
+      </div>
+    `;
+    app.appendChild(section);
+  });
+
+  if(state.current >= stages.length){
+    renderSummary();
+  }
+
+  wireEvents();
+  updateRail();
+}
+
+function renderSummary(){
+  const c = CASES[state.activeCase];
+  state.completed.add(state.activeCase);
+  const section = document.createElement("section");
+  section.className = "stage summary visible";
+  const correctCount = state.firstCorrect.filter(Boolean).length;
+  const recapHTML = c.recap.map(r => `<li><b>${r[0]}</b> ${r[1]}</li>`).join("");
+  section.innerHTML = `
+    <div class="stage-card">
+      <div class="stage-eyebrow">Case ${c.num} · Summary</div>
+      <h2 class="stage-title">What This Case Was Testing</h2>
+      <div class="score-banner">
+        <div class="score-num">${correctCount}/3</div>
+        <div class="score-sub">correct on your first answer at each stage</div>
+      </div>
+      <ul class="recap-list">${recapHTML}</ul>
+      <div class="nav-row">
+        <button type="button" class="restart-btn" id="restart-btn">Restart this case</button>
+        <button type="button" class="continue-btn" id="menu-link-summary">All cases &rarr;</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(section);
+}
+
+function goToMenu(){
+  state.activeCase = null;
+  state.current = -1;
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function startCase(idx){
+  state.activeCase = idx;
+  state.current = -1;
+  state.firstCorrect = [null, null, null];
+  state.selected = [null, null, null];
+  state.optionOrder = freshOptionOrder(CASES[idx].stages);
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function wireEvents(){
+  app.querySelectorAll("[data-select-case]").forEach(btn => {
+    btn.addEventListener("click", () => startCase(parseInt(btn.dataset.selectCase, 10)));
+  });
+  app.querySelectorAll(".option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const stageIdx = parseInt(btn.dataset.stage, 10);
+      const optIdx = parseInt(btn.dataset.opt, 10);
+      state.selected[stageIdx] = optIdx;
+      if(state.firstCorrect[stageIdx] === null){
+        state.firstCorrect[stageIdx] = CASES[state.activeCase].stages[stageIdx].options[optIdx].tier === "correct";
+      }
+      render();
+    });
+  });
+  app.querySelectorAll("[data-continue]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const stageIdx = parseInt(btn.dataset.continue, 10);
+      if(state.selected[stageIdx] === null) return;
+      state.current = stageIdx + 1;
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+  app.querySelectorAll("[data-back]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const stageIdx = parseInt(btn.dataset.back, 10);
+      state.current = stageIdx - 1;
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+  const restartBtn = document.getElementById("restart-btn");
+  if(restartBtn){
+    restartBtn.addEventListener("click", () => {
+      state.current = 0;
+      state.firstCorrect = [null, null, null];
+      state.selected = [null, null, null];
+      state.optionOrder = freshOptionOrder(CASES[state.activeCase].stages);
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  }
+  const beginBtn = document.getElementById("begin-btn");
+  if(beginBtn){
+    beginBtn.addEventListener("click", () => {
+      state.current = 0;
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  }
+  const menuLinkIntro = document.getElementById("menu-link-intro");
+  if(menuLinkIntro) menuLinkIntro.addEventListener("click", goToMenu);
+  const menuLinkSummary = document.getElementById("menu-link-summary");
+  if(menuLinkSummary) menuLinkSummary.addEventListener("click", goToMenu);
+}
+
+function updateRail(){
+  const dots = document.querySelectorAll(".dot-item");
+  dots.forEach((d, i) => {
+    d.classList.remove("active", "done");
+    if(i < state.current) d.classList.add("done");
+    else if(i === state.current) d.classList.add("active");
+  });
+  document.body.classList.remove("stage-0","stage-1","stage-2","stage-3");
+  document.body.classList.add("stage-" + Math.max(0, Math.min(state.current, 2)));
+}
+
+render();
+</script>
+</body>
+</html>
